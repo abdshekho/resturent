@@ -9,9 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['mongodb'],
-  },
   async headers() {
     return [
       {

@@ -31,7 +31,13 @@ export async function POST(request: NextRequest) {
 
     // Check password
     const passwordField = userType === "super-admin" ? user.password : user.owner.password
+
+    
     const isPasswordValid = await bcrypt.compare(password, passwordField)
+    
+    console.log('🚀 ~ route.ts ~ POST ~ passwordField:', passwordField);
+    console.log('🚀 ~ route.ts ~ POST ~ isPasswordValid:', isPasswordValid);
+
 
     if (!isPasswordValid) {
       return NextResponse.json({ message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" }, { status: 401 })

@@ -6,7 +6,6 @@ import { StatsCards } from "@/components/super-admin/stats-cards"
 import { RestaurantsTable } from "@/components/super-admin/restaurants-table"
 import { AddRestaurantDialog, type RestaurantFormData } from "@/components/super-admin/add-restaurant-dialog"
 import type { Restaurant } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
 
 // Mock data - في التطبيق الحقيقي، ستأتي من API
 const mockStats = {
@@ -18,8 +17,8 @@ const mockStats = {
 
 const mockRestaurants: Restaurant[] = [
   {
-    _id: new ObjectId(),
-    companyId: new ObjectId(),
+    _id: "507f1f77bcf86cd799439011",
+    companyId: "507f1f77bcf86cd799439012",
     name: "مطعم الأصالة",
     slug: "asala-restaurant",
     description: "مطعم متخصص في الأكلات الشعبية السعودية",
@@ -51,8 +50,8 @@ const mockRestaurants: Restaurant[] = [
     updatedAt: new Date(),
   },
   {
-    _id: new ObjectId(),
-    companyId: new ObjectId(),
+    _id: "507f1f77bcf86cd799439013",
+    companyId: "507f1f77bcf86cd799439014",
     name: "مقهى الورد",
     slug: "alward-cafe",
     description: "مقهى عصري يقدم أفضل أنواع القهوة والحلويات",
@@ -91,8 +90,8 @@ export default function SuperAdminDashboard() {
 
   const handleAddRestaurant = (data: RestaurantFormData) => {
     const newRestaurant: Restaurant = {
-      _id: new ObjectId(),
-      companyId: new ObjectId(),
+      _id: Math.random().toString(36).substr(2, 9),
+      companyId: Math.random().toString(36).substr(2, 9),
       name: data.name,
       slug: data.slug,
       description: data.description,

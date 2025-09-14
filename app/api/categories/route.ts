@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { DatabaseService } from "@/lib/database"
+import { ObjectId } from "mongodb"
 
 export async function GET() {
   try {
@@ -18,7 +19,12 @@ export async function POST(request: Request) {
     const body = await request.json()
     const db = DatabaseService.getInstance()
     
-    const category = await db.createCategory(body)
+    const categoryData = {
+      ...body,
+      restaurantId: new ObjectId(body.restaurantId)
+    }
+    
+    const category = await db.createCategory(categoryData)
     
     return NextResponse.json(category)
   } catch (error) {

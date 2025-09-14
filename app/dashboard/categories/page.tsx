@@ -7,24 +7,34 @@ import type { Category } from "@/lib/models/Company"
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
+  const [restaurantId, setRestaurantId] = useState<string>('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/categories')
-        if (response.ok) {
-          const data = await response.json()
-          setCategories(data)
+        const [categoriesRes, userRes] = await Promise.all([
+          fetch('/api/categories'),
+          fetch('/api/auth/me')
+        ])
+        
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          setCategories(categoriesData)
+        }
+        
+        if (userRes.ok) {
+          const userData = await userRes.json()
+          setRestaurantId(userData.restaurantId || '')
         }
       } catch (error) {
-        console.error('Error fetching categories:', error)
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchCategories()
+    fetchData()
   }, [])
 
   const handleAddCategory = async (categoryData: Omit<Category, "_id" | "createdAt" | "updatedAt">) => {
@@ -103,6 +113,7 @@ export default function CategoriesPage() {
 
           <CategoriesManagement
             categories={categories}
+            restaurantId={restaurantId}
             onAddCategory={handleAddCategory}
             onEditCategory={handleEditCategory}
             onDeleteCategory={handleDeleteCategory}

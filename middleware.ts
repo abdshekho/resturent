@@ -7,10 +7,23 @@ export function middleware(request: NextRequest) {
 
   // Extract subdomain
   const parts = hostname.split(".")
-  const subdomain = parts.length > 2 ? parts[0] : null
+  let subdomain = null
+  
+  if (hostname.includes("localhost")) {
+    // For localhost: subdomain.localhost:port
+    subdomain = parts.length >= 2 && parts[0] !== "localhost" ? parts[0] : null
+  } else {
+    // For production: subdomain.domain.com
+    subdomain = parts.length > 2 ? parts[0] : null
+  }
+  
+  console.log('Middleware:', { hostname, parts, subdomain, pathname: url.pathname })
 
-  // Skip middleware for localhost and development
-  if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
+  // For development, check if hostname has subdomain pattern
+  const isLocalhost = hostname.includes("localhost") || hostname.includes("127.0.0.1")
+  
+  // Skip middleware for localhost without subdomain
+  if (isLocalhost && !subdomain) {
     return NextResponse.next()
   }
 
@@ -29,10 +42,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // If subdomain exists and not on menu page, redirect to menu
-  if (subdomain && !url.pathname.startsWith("/menu")) {
+  // If subdomain exists, rewrite to menu page
+  if (subdomain && subdomain !== "www") {
     url.pathname = `/menu/${subdomain}`
-    return NextResponse.redirect(url)
+    return NextResponse.rewrite(url)
   }
 
   // If no subdomain and on menu page, redirect to home

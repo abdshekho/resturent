@@ -4,15 +4,16 @@ import { DatabaseService } from "@/lib/database"
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
     const db = DatabaseService.getInstance()
-    const restaurant = await db.getRestaurantBySlug(params.slug)
+    const resolverParams = await params;
+    const restaurant = await db.getRestaurantBySlug(resolverParams.slug)
 
     if (!restaurant) {
       return NextResponse.json({ error: "Restaurant not found" }, { status: 404 })
     }
 
-    if (!restaurant.settings.isActive) {
-      return NextResponse.json({ error: "Restaurant is not active" }, { status: 403 })
-    }
+    // if (!restaurant.settings.isActive) {
+    //   return NextResponse.json({ error: "Restaurant is not active" }, { status: 403 })
+    // }
 
     // Get categories and menu items
     const [categories, menuItems] = await Promise.all([

@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, MoreHorizontal, Edit, Trash2, Star, ImageIcon } from "lucide-react"
 import type { MenuItem, Category } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
 
 interface MenuItemsManagementProps {
   menuItems: MenuItem[]
@@ -58,14 +57,14 @@ export function MenuItemsManagement({
     if (editingMenuItem) {
       onEditMenuItem(editingMenuItem._id?.toString() || "", {
         ...formData,
-        categoryId: new ObjectId(formData.categoryId),
+        categoryId: formData.categoryId,
         updatedAt: new Date(),
       })
       setEditingMenuItem(null)
     } else {
       onAddMenuItem({
-        restaurantId: new ObjectId(), // This should come from context
-        categoryId: new ObjectId(formData.categoryId),
+        restaurantId: "", // This should come from context
+        categoryId: formData.categoryId,
         name: formData.name,
         description: formData.description,
         price: formData.price,
@@ -104,7 +103,7 @@ export function MenuItemsManagement({
     setIsAddDialogOpen(true)
   }
 
-  const getCategoryName = (categoryId: ObjectId) => {
+  const getCategoryName = (categoryId: string | any) => {
     const category = categories.find((c) => c._id?.toString() === categoryId.toString())
     return category?.name || "غير محدد"
   }

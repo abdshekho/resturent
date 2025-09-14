@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, use } from "react"
 import { MenuHeader } from "@/components/menu/menu-header"
 import { CategoryTabs } from "@/components/menu/category-tabs"
 import { MenuItemCard } from "@/components/menu/menu-item-card"
@@ -13,7 +13,8 @@ interface CartItem {
   quantity: number
 }
 
-export default function MenuPage({ params }: { params: { slug: string } }) {
+export default function MenuPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
@@ -30,9 +31,9 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
         setLoading(true)
         
         const [restaurantRes, categoriesRes, menuRes] = await Promise.all([
-          fetch(`/api/restaurants/${params.slug}`),
-          fetch(`/api/restaurants/${params.slug}/categories`),
-          fetch(`/api/restaurants/${params.slug}/menu`)
+          fetch(`/api/restaurants/${resolvedParams.slug}`),
+          fetch(`/api/restaurants/${resolvedParams.slug}/categories`),
+          fetch(`/api/restaurants/${resolvedParams.slug}/menu`)
         ])
 
         if (!restaurantRes.ok) {
@@ -42,10 +43,10 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
 
         const restaurantData = await restaurantRes.json()
         
-        if (!restaurantData.settings.isActive) {
-          setError("المطعم غير نشط حالياً")
-          return
-        }
+        // if (!restaurantData.settings.isActive) {
+        //   setError("المطعم غير نشط حالياً")
+        //   return
+        // }
 
         setRestaurant(restaurantData)
 
@@ -67,7 +68,7 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
     }
 
     loadRestaurantData()
-  }, [params.slug])
+  }, [resolvedParams.slug])
 
   // Filter menu items by active category
   const filteredMenuItems = useMemo(() => {

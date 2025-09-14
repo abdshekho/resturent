@@ -79,6 +79,15 @@ export class DatabaseService {
     return { ...newCategory, _id: result.insertedId }
   }
 
+  async getCategories(): Promise<Category[]> {
+    const { db } = await connectToDatabase()
+    return await db
+      .collection<Category>("categories")
+      .find({})
+      .sort({ sortOrder: 1 })
+      .toArray()
+  }
+
   async getCategoriesByRestaurant(restaurantId: ObjectId): Promise<Category[]> {
     const { db } = await connectToDatabase()
     return await db

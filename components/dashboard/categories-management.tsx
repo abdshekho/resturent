@@ -21,10 +21,11 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, MoreHorizontal, Edit, Trash2, Package } from "lucide-react"
 import type { Category } from "@/lib/models/Company"
-// import { ObjectId } from "mongodb"
+
 
 interface CategoriesManagementProps {
   categories: Category[]
+  restaurantId: string
   onAddCategory: (category: Omit<Category, "_id" | "createdAt" | "updatedAt">) => void
   onEditCategory: (id: string, category: Partial<Category>) => void
   onDeleteCategory: (id: string) => void
@@ -32,6 +33,7 @@ interface CategoriesManagementProps {
 
 export function CategoriesManagement({
   categories,
+  restaurantId,
   onAddCategory,
   onEditCategory,
   onDeleteCategory,
@@ -55,8 +57,9 @@ export function CategoriesManagement({
       })
       setEditingCategory(null)
     } else {
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
       onAddCategory({
-        restaurantId: '12', // This should come from context
+        restaurantId: restaurantId || user.restaurantId || '',
         name: formData.name,
         description: formData.description,
         isActive: formData.isActive,

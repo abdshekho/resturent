@@ -1,119 +1,89 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SuperAdminSidebar } from "@/components/super-admin/sidebar"
 import { StatsCards } from "@/components/super-admin/stats-cards"
 import { RestaurantsTable } from "@/components/super-admin/restaurants-table"
 import { AddRestaurantDialog, type RestaurantFormData } from "@/components/super-admin/add-restaurant-dialog"
 import type { Restaurant } from "@/lib/models/Company"
 
-// Mock data - في التطبيق الحقيقي، ستأتي من API
-const mockStats = {
-  totalRestaurants: 12,
-  totalUsers: 45,
-  totalOrders: 1250,
-  totalRevenue: 125000,
-}
-
-const mockRestaurants: Restaurant[] = [
-  {
-    _id: "507f1f77bcf86cd799439011",
-    companyId: "507f1f77bcf86cd799439012",
-    name: "مطعم الأصالة",
-    slug: "asala-restaurant",
-    description: "مطعم متخصص في الأكلات الشعبية السعودية",
-    cuisine: ["عربي", "خليجي"],
-    contact: {
-      email: "info@asala.com",
-      phone: "+966501234567",
-      address: {
-        street: "شارع الملك فهد",
-        city: "الرياض",
-        state: "الرياض",
-        country: "السعودية",
-        zipCode: "12345",
-      },
-    },
-    settings: {
-      isActive: true,
-      acceptOrders: true,
-      deliveryEnabled: true,
-      pickupEnabled: true,
-      operatingHours: {},
-    },
-    theme: {
-      primaryColor: "#0891b2",
-      secondaryColor: "#84cc16",
-      fontFamily: "Arial",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: "507f1f77bcf86cd799439013",
-    companyId: "507f1f77bcf86cd799439014",
-    name: "مقهى الورد",
-    slug: "alward-cafe",
-    description: "مقهى عصري يقدم أفضل أنواع القهوة والحلويات",
-    cuisine: ["مقهى", "حلويات"],
-    contact: {
-      email: "info@alward.com",
-      phone: "+966507654321",
-      address: {
-        street: "شارع التحلية",
-        city: "جدة",
-        state: "مكة المكرمة",
-        country: "السعودية",
-        zipCode: "23456",
-      },
-    },
-    settings: {
-      isActive: true,
-      acceptOrders: true,
-      deliveryEnabled: false,
-      pickupEnabled: true,
-      operatingHours: {},
-    },
-    theme: {
-      primaryColor: "#0891b2",
-      secondaryColor: "#84cc16",
-      fontFamily: "Arial",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
-
 export default function SuperAdminDashboard() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>(mockRestaurants)
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [stats, setStats] = useState({
+    totalRestaurants: 0,
+    totalUsers: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+  })
+  const [loading, setLoading] = useState(true)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
-  const handleAddRestaurant = (data: RestaurantFormData) => {
-    const newRestaurant: Restaurant = {
-      _id: Math.random().toString(36).substr(2, 9),
-      companyId: Math.random().toString(36).substr(2, 9),
-      name: data.name,
-      slug: data.slug,
-      description: data.description,
-      cuisine: data.cuisine,
-      contact: {
-        email: data.email,
-        phone: data.phone,
-        address: data.address,
-      },
-      settings: {
-        ...data.settings,
-        operatingHours: {},
-      },
-      theme: {
-        ...data.theme,
-        fontFamily: "Arial",
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [restaurantsRes, statsRes] = await Promise.all([
+          fetch('/api/super-admin/restaurants'),
+          fetch('/api/super-admin/stats')
+        ])
+        
+        if (restaurantsRes.ok) {
+          const restaurantsData = await restaurantsRes.json()
+          setRestaurants(restaurantsData)
+        }
+        
+        if (statsRes.ok) {
+          const statsData = await statsRes.json()
+          setStats(statsData)
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    setRestaurants((prev) => [...prev, newRestaurant])
+    fetchData()
+  }, [])
+
+  const handleAddRestaurant = async (data: RestaurantFormData) => {
+    try {
+      const response = await fetch('/api/restaurants', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          slug: data.slug,
+          description: data.description,
+          cuisine: data.cuisine,
+          contact: {
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+          },
+          settings: {
+            ...data.settings,
+            operatingHours: {},
+          },
+          theme: {
+            ...data.theme,
+            fontFamily: "Arial",
+          },
+          companyId: "507f1f77bcf86cd799439012", // Default company ID
+        }),
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        setRestaurants((prev) => [...prev, result.restaurant])
+      } else {
+        console.error('Failed to add restaurant:', result.message)
+      }
+    } catch (error) {
+      console.error('Error adding restaurant:', error)
+    }
   }
 
   const handleViewRestaurant = (id: string) => {
@@ -140,7 +110,7 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div className="space-y-8">
-            <StatsCards stats={mockStats} />
+            <StatsCards stats={stats} />
 
             <RestaurantsTable
               restaurants={restaurants}

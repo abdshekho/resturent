@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, MoreHorizontal, Edit, Trash2, Package } from "lucide-react"
 import type { Category } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
+// import { ObjectId } from "mongodb"
 
 interface CategoriesManagementProps {
   categories: Category[]
@@ -56,7 +56,7 @@ export function CategoriesManagement({
       setEditingCategory(null)
     } else {
       onAddCategory({
-        restaurantId: new ObjectId(), // This should come from context
+        restaurantId: '12', // This should come from context
         name: formData.name,
         description: formData.description,
         isActive: formData.isActive,

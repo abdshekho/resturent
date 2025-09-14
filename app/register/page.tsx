@@ -21,6 +21,7 @@ export default function RegisterPage() {
     phone: "",
     address: "",
     description: "",
+    password: "",
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -144,6 +145,21 @@ export default function RegisterPage() {
                   dir="ltr"
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">كلمة المرور *</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="text-right"
+                dir="ltr"
+                minLength={6}
+              />
             </div>
 
             <div className="space-y-2">

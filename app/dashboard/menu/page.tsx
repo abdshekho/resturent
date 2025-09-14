@@ -1,90 +1,103 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { MenuItemsManagement } from "@/components/dashboard/menu-items-management"
 import type { MenuItem, Category } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
-
-// Mock data
-const mockCategories: Category[] = [
-  {
-    _id: new ObjectId("507f1f77bcf86cd799439011"),
-    restaurantId: new ObjectId(),
-    name: "المقبلات",
-    description: "مجموعة متنوعة من المقبلات الشهية",
-    sortOrder: 1,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId("507f1f77bcf86cd799439012"),
-    restaurantId: new ObjectId(),
-    name: "الأطباق الرئيسية",
-    description: "أطباق رئيسية من المطبخ العربي الأصيل",
-    sortOrder: 2,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
-
-const mockMenuItems: MenuItem[] = [
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439011"),
-    name: "حمص بالطحينة",
-    description: "حمص طازج مع الطحينة والزيت والبقدونس",
-    price: 15,
-    ingredients: ["حمص", "طحينة", "زيت زيتون", "بقدونس"],
-    isAvailable: true,
-    isPopular: true,
-    sortOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439012"),
-    name: "كبسة لحم",
-    description: "كبسة لحم غنم طازج مع الأرز البسمتي والخضار",
-    price: 45,
-    ingredients: ["لحم غنم", "أرز بسمتي", "طماطم", "بصل", "هيل", "قرفة"],
-    isAvailable: true,
-    isPopular: true,
-    sortOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
 
 export default function MenuPage() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(mockMenuItems)
-  const [categories] = useState<Category[]>(mockCategories)
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleAddMenuItem = (menuItemData: Omit<MenuItem, "_id" | "createdAt" | "updatedAt">) => {
-    const newMenuItem: MenuItem = {
-      ...menuItemData,
-      _id: new ObjectId(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [menuRes, categoriesRes] = await Promise.all([
+          fetch('/api/menu'),
+          fetch('/api/categories')
+        ])
+        
+        if (menuRes.ok) {
+          const menuData = await menuRes.json()
+          setMenuItems(menuData)
+        }
+        
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          setCategories(categoriesData)
+        }
+      } catch (error) {
+        console.error('Error fetching menu data:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-    setMenuItems((prev) => [...prev, newMenuItem])
+
+    fetchData()
+  }, [])
+
+  const handleAddMenuItem = async (menuItemData: Omit<MenuItem, "_id" | "createdAt" | "updatedAt">) => {
+    try {
+      const response = await fetch('/api/menu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(menuItemData)
+      })
+      
+      if (response.ok) {
+        const newMenuItem = await response.json()
+        setMenuItems(prev => [...prev, newMenuItem])
+      }
+    } catch (error) {
+      console.error('Error adding menu item:', error)
+    }
   }
 
-  const handleEditMenuItem = (id: string, menuItemData: Partial<MenuItem>) => {
-    setMenuItems((prev) =>
-      prev.map((menuItem) =>
-        menuItem._id?.toString() === id ? { ...menuItem, ...menuItemData, updatedAt: new Date() } : menuItem,
-      ),
+  const handleEditMenuItem = async (id: string, menuItemData: Partial<MenuItem>) => {
+    try {
+      const response = await fetch(`/api/menu/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(menuItemData)
+      })
+      
+      if (response.ok) {
+        setMenuItems(prev =>
+          prev.map(item => item._id?.toString() === id ? { ...item, ...menuItemData } : item)
+        )
+      }
+    } catch (error) {
+      console.error('Error updating menu item:', error)
+    }
+  }
+
+  const handleDeleteMenuItem = async (id: string) => {
+    try {
+      const response = await fetch(`/api/menu/${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (response.ok) {
+        setMenuItems(prev => prev.filter(item => item._id?.toString() !== id))
+      }
+    } catch (error) {
+      console.error('Error deleting menu item:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-background">
+        <DashboardSidebar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">جاري تحميل البيانات...</p>
+          </div>
+        </main>
+      </div>
     )
-  }
-
-  const handleDeleteMenuItem = (id: string) => {
-    setMenuItems((prev) => prev.filter((menuItem) => menuItem._id?.toString() !== id))
   }
 
   return (

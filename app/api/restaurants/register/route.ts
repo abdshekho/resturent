@@ -4,9 +4,9 @@ import { connectToDatabase } from "@/lib/database"
 
 export async function POST(request: NextRequest) {
   try {
-    const { restaurantName, ownerName, email, phone, address, description } = await request.json()
+    const { restaurantName, ownerName, email, phone, address, description, password } = await request.json()
 
-    if (!restaurantName || !ownerName || !email || !phone || !address) {
+    if (!restaurantName || !ownerName || !email || !phone || !address || !password) {
       return NextResponse.json({ message: "جميع الحقول المطلوبة يجب ملؤها" }, { status: 400 })
     }
 
@@ -21,9 +21,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "يوجد مطعم مسجل بهذا البريد الإلكتروني بالفعل" }, { status: 400 })
     }
 
-    // Generate temporary password (will be sent via email in real implementation)
-    const tempPassword = Math.random().toString(36).slice(-8)
-    const hashedPassword = await bcrypt.hash(tempPassword, 12)
+    // Hash the provided password
+    const hashedPassword = await bcrypt.hash(password, 12)
 
     // Create restaurant document
     const restaurant = {
@@ -47,8 +46,8 @@ export async function POST(request: NextRequest) {
 
     const result = await db.collection("restaurants").insertOne(restaurant)
 
-    // In a real implementation, you would send an email with login credentials
-    console.log(`Restaurant registered: ${email}, temp password: ${tempPassword}`)
+    // Restaurant registered successfully
+    console.log(`Restaurant registered: ${email}`)
 
     return NextResponse.json({
       message: "تم تسجيل المطعم بنجاح. سيتم التواصل معك قريباً لتفعيل الحساب.",

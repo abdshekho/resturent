@@ -6,164 +6,7 @@ import { CategoryTabs } from "@/components/menu/category-tabs"
 import { MenuItemCard } from "@/components/menu/menu-item-card"
 import { CartSidebar } from "@/components/menu/cart-sidebar"
 import { FloatingCartButton } from "@/components/menu/floating-cart-button"
-import { DatabaseService } from "@/lib/database"
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
-
-// Mock data - في التطبيق الحقيقي، ستأتي من API
-const mockRestaurant: Restaurant = {
-  _id: new ObjectId(),
-  companyId: new ObjectId(),
-  name: "مطعم الأصالة",
-  slug: "asala-restaurant",
-  description: "مطعم متخصص في الأكلات الشعبية السعودية الأصيلة",
-  cuisine: ["عربي", "خليجي"],
-  contact: {
-    email: "info@asala.com",
-    phone: "+966 50 123 4567",
-    address: {
-      street: "شارع الملك فهد",
-      city: "الرياض",
-      state: "الرياض",
-      country: "السعودية",
-      zipCode: "12345",
-    },
-  },
-  settings: {
-    isActive: true,
-    acceptOrders: true,
-    deliveryEnabled: true,
-    pickupEnabled: true,
-    operatingHours: {},
-  },
-  theme: {
-    primaryColor: "#0891b2",
-    secondaryColor: "#84cc16",
-    fontFamily: "Arial",
-  },
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
-
-const mockCategories: Category[] = [
-  {
-    _id: new ObjectId("507f1f77bcf86cd799439011"),
-    restaurantId: new ObjectId(),
-    name: "المقبلات",
-    description: "مجموعة متنوعة من المقبلات الشهية",
-    sortOrder: 1,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId("507f1f77bcf86cd799439012"),
-    restaurantId: new ObjectId(),
-    name: "الأطباق الرئيسية",
-    description: "أطباق رئيسية من المطبخ العربي الأصيل",
-    sortOrder: 2,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId("507f1f77bcf86cd799439013"),
-    restaurantId: new ObjectId(),
-    name: "المشروبات",
-    description: "مشروبات ساخنة وباردة",
-    sortOrder: 3,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
-
-const mockMenuItems: MenuItem[] = [
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439011"),
-    name: "حمص بالطحينة",
-    description: "حمص طازج مع الطحينة والزيت والبقدونس",
-    price: 15,
-    ingredients: ["حمص", "طحينة", "زيت زيتون", "بقدونس"],
-    isAvailable: true,
-    isPopular: true,
-    sortOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439011"),
-    name: "متبل باذنجان",
-    description: "متبل باذنجان مشوي مع الطحينة والثوم",
-    price: 12,
-    ingredients: ["باذنجان", "طحينة", "ثوم", "ليمون"],
-    isAvailable: true,
-    isPopular: false,
-    sortOrder: 2,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439012"),
-    name: "كبسة لحم",
-    description: "كبسة لحم غنم طازج مع الأرز البسمتي والخضار",
-    price: 45,
-    ingredients: ["لحم غنم", "أرز بسمتي", "طماطم", "بصل", "هيل", "قرفة"],
-    isAvailable: true,
-    isPopular: true,
-    sortOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439012"),
-    name: "مندي دجاج",
-    description: "مندي دجاج طازج مع الأرز البسمتي والسلطة",
-    price: 35,
-    ingredients: ["دجاج", "أرز بسمتي", "بصل", "هيل", "قرفة"],
-    isAvailable: true,
-    isPopular: false,
-    sortOrder: 2,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439013"),
-    name: "شاي أحمر",
-    description: "شاي أحمر طازج مع السكر",
-    price: 5,
-    ingredients: ["شاي", "سكر"],
-    isAvailable: true,
-    isPopular: false,
-    sortOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    categoryId: new ObjectId("507f1f77bcf86cd799439013"),
-    name: "قهوة عربية",
-    description: "قهوة عربية أصيلة مع الهيل",
-    price: 8,
-    ingredients: ["قهوة", "هيل"],
-    isAvailable: true,
-    isPopular: true,
-    sortOrder: 2,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
 
 interface CartItem {
   menuItem: MenuItem
@@ -171,9 +14,9 @@ interface CartItem {
 }
 
 export default function MenuPage({ params }: { params: { slug: string } }) {
-  const [restaurant, setRestaurant] = useState<Restaurant | null>(mockRestaurant)
-  const [categories, setCategories] = useState<Category[]>(mockCategories)
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(mockMenuItems)
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -185,16 +28,20 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
     const loadRestaurantData = async () => {
       try {
         setLoading(true)
-        const db = DatabaseService.getInstance()
+        
+        const [restaurantRes, categoriesRes, menuRes] = await Promise.all([
+          fetch(`/api/restaurants/${params.slug}`),
+          fetch(`/api/restaurants/${params.slug}/categories`),
+          fetch(`/api/restaurants/${params.slug}/menu`)
+        ])
 
-        // Get restaurant by slug
-        const restaurantData = await db.getRestaurantBySlug(params.slug)
-
-        if (!restaurantData) {
+        if (!restaurantRes.ok) {
           setError("المطعم غير موجود")
           return
         }
 
+        const restaurantData = await restaurantRes.json()
+        
         if (!restaurantData.settings.isActive) {
           setError("المطعم غير نشط حالياً")
           return
@@ -202,14 +49,15 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
 
         setRestaurant(restaurantData)
 
-        // Get categories and menu items
-        const [categoriesData, menuItemsData] = await Promise.all([
-          db.getCategoriesByRestaurant(restaurantData._id!),
-          db.getMenuItemsByRestaurant(restaurantData._id!),
-        ])
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          setCategories(categoriesData)
+        }
 
-        setCategories(categoriesData)
-        setMenuItems(menuItemsData)
+        if (menuRes.ok) {
+          const menuData = await menuRes.json()
+          setMenuItems(menuData)
+        }
       } catch (err) {
         console.error("Error loading restaurant data:", err)
         setError("حدث خطأ في تحميل بيانات المطعم")
@@ -264,39 +112,38 @@ export default function MenuPage({ params }: { params: { slug: string } }) {
 
   const handlePlaceOrder = async (orderData: any) => {
     try {
-      const db = DatabaseService.getInstance()
-
-      // Generate order number
-      const orderNumber = `ORD-${Date.now()}`
-
-      // Calculate totals
       const subtotal = cartItems.reduce((sum, item) => sum + item.menuItem.price * item.quantity, 0)
       const tax = subtotal * 0.15
       const total = subtotal + tax
 
-      // Create order
-      const order = await db.createOrder({
-        restaurantId: restaurant!._id!,
-        orderNumber,
-        customerInfo: orderData.customerInfo,
-        items: cartItems.map((item) => ({
-          menuItemId: item.menuItem._id!,
-          name: item.menuItem.name,
-          price: item.menuItem.price,
-          quantity: item.quantity,
-        })),
-        subtotal,
-        tax,
-        total,
-        status: "pending",
-        orderType: orderData.orderType,
-        paymentStatus: "pending",
-        notes: orderData.notes,
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantId: restaurant!._id!,
+          customerInfo: orderData.customerInfo,
+          items: cartItems.map((item) => ({
+            menuItemId: item.menuItem._id!,
+            name: item.menuItem.name,
+            price: item.menuItem.price,
+            quantity: item.quantity,
+          })),
+          subtotal,
+          tax,
+          total,
+          orderType: orderData.orderType,
+          notes: orderData.notes,
+        })
       })
 
-      alert(`تم تأكيد طلبك! رقم الطلب: ${orderNumber}`)
-      setCartItems([])
-      setIsCartOpen(false)
+      if (response.ok) {
+        const result = await response.json()
+        alert(`تم تأكيد طلبك! رقم الطلب: ${result.order.orderNumber}`)
+        setCartItems([])
+        setIsCartOpen(false)
+      } else {
+        throw new Error('Failed to place order')
+      }
     } catch (error) {
       console.error("Error placing order:", error)
       alert("حدث خطأ في تأكيد الطلب. يرجى المحاولة مرة أخرى.")

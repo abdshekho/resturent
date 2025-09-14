@@ -1,80 +1,62 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardStats } from "@/components/dashboard/dashboard-stats"
 import { RecentOrders } from "@/components/dashboard/recent-orders"
 import type { Order } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
-
-// Mock data - في التطبيق الحقيقي، ستأتي من API
-const mockStats = {
-  todayOrders: 24,
-  todayRevenue: 1850,
-  totalCustomers: 156,
-  popularItem: "كبسة لحم",
-}
-
-const mockOrders: Order[] = [
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    orderNumber: "ORD-001",
-    customerInfo: {
-      name: "أحمد محمد",
-      phone: "+966501234567",
-      tableNumber: "5",
-    },
-    items: [
-      {
-        menuItemId: new ObjectId(),
-        name: "كبسة لحم",
-        price: 45,
-        quantity: 1,
-      },
-      {
-        menuItemId: new ObjectId(),
-        name: "سلطة فتوش",
-        price: 15,
-        quantity: 1,
-      },
-    ],
-    subtotal: 60,
-    tax: 9,
-    total: 69,
-    status: "preparing",
-    orderType: "dine-in",
-    paymentStatus: "paid",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    orderNumber: "ORD-002",
-    customerInfo: {
-      name: "فاطمة العلي",
-      phone: "+966507654321",
-    },
-    items: [
-      {
-        menuItemId: new ObjectId(),
-        name: "مندي دجاج",
-        price: 35,
-        quantity: 2,
-      },
-    ],
-    subtotal: 70,
-    tax: 10.5,
-    total: 80.5,
-    status: "confirmed",
-    orderType: "takeaway",
-    paymentStatus: "paid",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    todayOrders: 0,
+    todayRevenue: 0,
+    totalCustomers: 0,
+    popularItem: "",
+  })
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, ordersRes] = await Promise.all([
+          fetch('/api/dashboard/stats'),
+          fetch('/api/dashboard/orders')
+        ])
+        
+        if (statsRes.ok) {
+          const statsData = await statsRes.json()
+          setStats(statsData)
+        }
+        
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json()
+          setOrders(ordersData)
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-background">
+        <DashboardSidebar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">جاري تحميل البيانات...</p>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-screen bg-background">
       <DashboardSidebar />
@@ -87,8 +69,8 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-8">
-            <DashboardStats stats={mockStats} />
-            <RecentOrders orders={mockOrders} />
+            <DashboardStats stats={stats} />
+            <RecentOrders orders={orders} />
           </div>
         </div>
       </main>

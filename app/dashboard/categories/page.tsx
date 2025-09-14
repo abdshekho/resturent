@@ -1,68 +1,93 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { CategoriesManagement } from "@/components/dashboard/categories-management"
 import type { Category } from "@/lib/models/Company"
-import { ObjectId } from "mongodb"
-
-// Mock data
-const mockCategories: Category[] = [
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    name: "المقبلات",
-    description: "مجموعة متنوعة من المقبلات الشهية",
-    sortOrder: 1,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    name: "الأطباق الرئيسية",
-    description: "أطباق رئيسية من المطبخ العربي الأصيل",
-    sortOrder: 2,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    _id: new ObjectId(),
-    restaurantId: new ObjectId(),
-    name: "المشروبات",
-    description: "مشروبات ساخنة وباردة",
-    sortOrder: 3,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>(mockCategories)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleAddCategory = (categoryData: Omit<Category, "_id" | "createdAt" | "updatedAt">) => {
-    const newCategory: Category = {
-      ...categoryData,
-      _id: new ObjectId(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-    setCategories((prev) => [...prev, newCategory])
+
+    fetchCategories()
+  }, [])
+
+  const handleAddCategory = async (categoryData: Omit<Category, "_id" | "createdAt" | "updatedAt">) => {
+    try {
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(categoryData)
+      })
+      
+      if (response.ok) {
+        const newCategory = await response.json()
+        setCategories(prev => [...prev, newCategory])
+      }
+    } catch (error) {
+      console.error('Error adding category:', error)
+    }
   }
 
-  const handleEditCategory = (id: string, categoryData: Partial<Category>) => {
-    setCategories((prev) =>
-      prev.map((category) =>
-        category._id?.toString() === id ? { ...category, ...categoryData, updatedAt: new Date() } : category,
-      ),
+  const handleEditCategory = async (id: string, categoryData: Partial<Category>) => {
+    try {
+      const response = await fetch(`/api/categories/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(categoryData)
+      })
+      
+      if (response.ok) {
+        setCategories(prev =>
+          prev.map(category => category._id?.toString() === id ? { ...category, ...categoryData } : category)
+        )
+      }
+    } catch (error) {
+      console.error('Error updating category:', error)
+    }
+  }
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      const response = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (response.ok) {
+        setCategories(prev => prev.filter(category => category._id?.toString() !== id))
+      }
+    } catch (error) {
+      console.error('Error deleting category:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-background">
+        <DashboardSidebar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">جاري تحميل البيانات...</p>
+          </div>
+        </main>
+      </div>
     )
-  }
-
-  const handleDeleteCategory = (id: string) => {
-    setCategories((prev) => prev.filter((category) => category._id?.toString() !== id))
   }
 
   return (

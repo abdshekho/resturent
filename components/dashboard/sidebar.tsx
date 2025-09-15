@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const navigation = [
   {
@@ -79,8 +80,8 @@ export function DashboardSidebar() {
         })}
       </nav>
 
-      {/* QR Code Link */}
-      <div className="p-4 border-t">
+      {/* QR Code Link & Theme Toggle */}
+      <div className="p-4 border-t space-y-2">
         <Link
           href="/dashboard/qr"
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
@@ -88,6 +89,10 @@ export function DashboardSidebar() {
           <QrCode className="h-4 w-4" />
           عرض رمز QR
         </Link>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">المظهر</span>
+          <ThemeToggle />
+        </div>
       </div>
     </div>
   )

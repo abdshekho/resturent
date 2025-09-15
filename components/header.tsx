@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Menu, X, QrCode, ChevronDown, User, Shield } from "lucide-react"
 import { useState } from "react"
 import { useAuth } from "@/components/auth/auth-provider"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -50,6 +51,7 @@ export function Header() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
+          <ThemeToggle />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -110,7 +112,11 @@ export function Header() {
         <div className="md:hidden border-t bg-background">
           <nav className="container mx-auto flex flex-col gap-4 p-4">
             {/* Existing mobile navigation code */}
-            <div className="flex flex-col gap-2 pt-4 border-t">
+            <div className="flex items-center justify-between pt-4 border-t mb-2">
+              <span className="text-sm text-muted-foreground">المظهر</span>
+              <ThemeToggle />
+            </div>
+            <div className="flex flex-col gap-2">
               {user ? (
                 <>
                   <Link href={user.userType === "super-admin" ? "/super-admin" : "/dashboard"}>

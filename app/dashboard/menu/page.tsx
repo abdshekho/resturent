@@ -13,9 +13,12 @@ export default function MenuPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token')
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {}
+        
         const [menuRes, categoriesRes] = await Promise.all([
-          fetch('/api/menu'),
-          fetch('/api/categories')
+          fetch('/api/menu', { headers }),
+          fetch('/api/categories', { headers })
         ])
         
         if (menuRes.ok) {
@@ -39,9 +42,13 @@ export default function MenuPage() {
 
   const handleAddMenuItem = async (menuItemData: Omit<MenuItem, "_id" | "createdAt" | "updatedAt">) => {
     try {
+      const token = localStorage.getItem('token')
       const response = await fetch('/api/menu', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
         body: JSON.stringify(menuItemData)
       })
       
@@ -56,9 +63,13 @@ export default function MenuPage() {
 
   const handleEditMenuItem = async (id: string, menuItemData: Partial<MenuItem>) => {
     try {
+      const token = localStorage.getItem('token')
       const response = await fetch(`/api/menu/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
         body: JSON.stringify(menuItemData)
       })
       
@@ -74,8 +85,12 @@ export default function MenuPage() {
 
   const handleDeleteMenuItem = async (id: string) => {
     try {
+      const token = localStorage.getItem('token')
       const response = await fetch(`/api/menu/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
       })
       
       if (response.ok) {

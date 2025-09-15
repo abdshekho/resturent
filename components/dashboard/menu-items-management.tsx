@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useAuth } from "@/components/auth/auth-provider"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +39,7 @@ export function MenuItemsManagement({
   onEditMenuItem,
   onDeleteMenuItem,
 }: MenuItemsManagementProps) {
+  const { user } = useAuth()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null)
   const [formData, setFormData] = useState({
@@ -63,7 +65,7 @@ export function MenuItemsManagement({
       setEditingMenuItem(null)
     } else {
       onAddMenuItem({
-        restaurantId: "", // This should come from context
+        restaurantId: user?.restaurantId || "",
         categoryId: formData.categoryId,
         name: formData.name,
         description: formData.description,

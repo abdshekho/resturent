@@ -67,8 +67,8 @@ export interface Restaurant {
 }
 
 export interface Category {
-  _id?: string
-  restaurantId: string
+  _id?: ObjectId
+  restaurantId: ObjectId
   name: string
   description?: string
   image?: string

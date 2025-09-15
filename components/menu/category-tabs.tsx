@@ -22,7 +22,7 @@ export function CategoryTabs({ categories, activeCategory, onCategoryChange }: C
           >
             الكل
           </Button>
-          {categories.map((category) => (
+          {categories && categories?.length && categories.map((category) => (
             <Button
               key={category._id?.toString()}
               variant={activeCategory === category._id?.toString() ? "default" : "outline"}

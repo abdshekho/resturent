@@ -43,21 +43,22 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
 
         const restaurantData = await restaurantRes.json()
         
-        // if (!restaurantData.settings.isActive) {
+        // if (!restaurantData.restaurant.settings.isActive) {
         //   setError("المطعم غير نشط حالياً")
         //   return
         // }
 
-        setRestaurant(restaurantData)
+        setRestaurant(restaurantData.restaurant)
 
         if (categoriesRes.ok) {
           const categoriesData = await categoriesRes.json()
-          setCategories(categoriesData)
+          setCategories(categoriesData.categories)
         }
 
         if (menuRes.ok) {
           const menuData = await menuRes.json()
-          setMenuItems(menuData)
+          console.log('Menu data:', menuData)
+          setMenuItems(menuData.menuItems || [])
         }
       } catch (err) {
         console.error("Error loading restaurant data:", err)
@@ -183,7 +184,7 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredMenuItems.map((menuItem) => (
+          {filteredMenuItems && filteredMenuItems?.length &&filteredMenuItems.map((menuItem) => (
             <MenuItemCard key={menuItem._id?.toString()} menuItem={menuItem} onAddToCart={handleAddToCart} />
           ))}
         </div>

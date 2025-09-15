@@ -121,7 +121,7 @@ async function seedData() {
     const restaurant = new Restaurant({
       companyId: company._id,
       name: 'مطعم الأصالة',
-      slug: 'asala-restaurant',
+      slug: 'asala',
       description: 'مطعم للأكلات الشعبية',
       cuisine: ['عربي', 'شعبي'],
       contact: {

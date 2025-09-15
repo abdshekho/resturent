@@ -5,47 +5,52 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageToggle } from "@/components/language-toggle"
+import { useLanguage } from "@/components/language-provider"
 
-const navigation = [
-  {
-    name: "لوحة التحكم",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "القائمة",
-    href: "/dashboard/menu",
-    icon: Menu,
-  },
-  {
-    name: "التصنيفات",
-    href: "/dashboard/categories",
-    icon: Package,
-  },
-  {
-    name: "الطلبات",
-    href: "/dashboard/orders",
-    icon: ShoppingCart,
-  },
-  {
-    name: "التقارير",
-    href: "/dashboard/analytics",
-    icon: BarChart3,
-  },
-  {
-    name: "الموظفين",
-    href: "/dashboard/staff",
-    icon: Users,
-  },
-  {
-    name: "الإعدادات",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
-]
+
 
 export function DashboardSidebar() {
   const pathname = usePathname()
+  const { t } = useLanguage()
+
+  const navigation = [
+    {
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: t("menu"),
+      href: "/dashboard/menu",
+      icon: Menu,
+    },
+    {
+      name: t("categories"),
+      href: "/dashboard/categories",
+      icon: Package,
+    },
+    {
+      name: t("orders"),
+      href: "/dashboard/orders",
+      icon: ShoppingCart,
+    },
+    {
+      name: t("analytics"),
+      href: "/dashboard/analytics",
+      icon: BarChart3,
+    },
+    {
+      name: t("staff"),
+      href: "/dashboard/staff",
+      icon: Users,
+    },
+    {
+      name: t("settings"),
+      href: "/dashboard/settings",
+      icon: Settings,
+    },
+  ]
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-l">
@@ -90,8 +95,12 @@ export function DashboardSidebar() {
           عرض رمز QR
         </Link>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">المظهر</span>
+          <span className="text-sm text-muted-foreground">{t("theme")}</span>
           <ThemeToggle />
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">{t("language")}</span>
+          <LanguageToggle />
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { Menu, X, QrCode, ChevronDown, User, Shield } from "lucide-react"
 import { useState } from "react"
 import { useAuth } from "@/components/auth/auth-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageToggle } from "@/components/language-toggle"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -51,6 +52,7 @@ export function Header() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
+          <LanguageToggle />
           <ThemeToggle />
           {user ? (
             <DropdownMenu>
@@ -113,7 +115,7 @@ export function Header() {
           <nav className="container mx-auto flex flex-col gap-4 p-4">
             {/* Existing mobile navigation code */}
             <div className="flex items-center justify-between pt-4 border-t mb-2">
-              <span className="text-sm text-muted-foreground">المظهر</span>
+              <LanguageToggle />
               <ThemeToggle />
             </div>
             <div className="flex flex-col gap-2">

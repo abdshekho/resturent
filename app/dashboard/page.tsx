@@ -4,9 +4,11 @@ import { useState, useEffect } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardStats } from "@/components/dashboard/dashboard-stats"
 import { RecentOrders } from "@/components/dashboard/recent-orders"
+import { useLanguage } from "@/components/language-provider"
 import type { Order } from "@/lib/models/Company"
 
 export default function DashboardPage() {
+  const { t } = useLanguage()
   const [stats, setStats] = useState({
     todayOrders: 0,
     todayRevenue: 0,
@@ -64,8 +66,8 @@ export default function DashboardPage() {
       <main className="flex-1 overflow-y-auto">
         <div className="p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground">لوحة تحكم المطعم</h1>
-            <p className="text-muted-foreground">مرحباً بك في لوحة تحكم مطعم الأصالة</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("restaurantDashboard")}</h1>
+            <p className="text-muted-foreground">{t("welcomeMessage")}</p>
           </div>
 
           <div className="space-y-8">

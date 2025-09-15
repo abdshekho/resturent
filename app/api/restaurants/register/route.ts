@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { connectToDatabase } from "@/lib/database"
+import { Restaurant, User, Company } from "@/lib/models/mongoose"
+import connectDB from "@/lib/mongoose"
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,48 +11,99 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "جميع الحقول المطلوبة يجب ملؤها" }, { status: 400 })
     }
 
-    const { db } = await connectToDatabase()
+    await connectDB()
 
-    // Check if restaurant with this email already exists
-    const existingRestaurant = await db.collection("restaurants").findOne({
-      "owner.email": email,
-    })
+    // Check if user with this email already exists
+    const existingUser = await User.findOne({ email })
 
-    if (existingRestaurant) {
-      return NextResponse.json({ message: "يوجد مطعم مسجل بهذا البريد الإلكتروني بالفعل" }, { status: 400 })
+    if (existingUser) {
+      return NextResponse.json({ message: "يوجد مستخدم مسجل بهذا البريد الإلكتروني بالفعل" }, { status: 400 })
     }
 
     // Hash the provided password
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Create restaurant document
-    const restaurant = {
+    // Get or create default company
+    let company = await Company.findOne({})
+    if (!company) {
+      company = new Company({
+        name: "Default Company",
+        description: "Default company for restaurants",
+        email: "admin@example.com",
+        phone: "123456789",
+        address: {
+          street: "Default Street",
+          city: "Default City",
+          state: "Default State",
+          country: "Default Country",
+          zipCode: "12345"
+        },
+        settings: {
+          allowRegistration: true,
+          maxRestaurants: 100,
+          subscriptionPlan: "basic"
+        }
+      })
+      await company.save()
+    }
+
+    // Create restaurant
+    const restaurant = new Restaurant({
+      companyId: company._id,
       name: restaurantName,
       slug: restaurantName
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^\w-]/g, ""),
       description: description || "",
-      address,
-      phone,
-      owner: {
-        name: ownerName,
+      cuisine: [],
+      contact: {
         email,
-        password: hashedPassword,
+        phone,
+        address: {
+          street: address.street || "",
+          city: address.city || "",
+          state: address.state || "",
+          country: address.country || "",
+          zipCode: address.zipCode || ""
+        }
       },
-      status: "pending", // pending, active, suspended
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
+      settings: {
+        isActive: false, // pending approval
+        acceptOrders: false,
+        deliveryEnabled: false,
+        pickupEnabled: true,
+        operatingHours: {}
+      },
+      theme: {
+        primaryColor: "#000000",
+        secondaryColor: "#ffffff",
+        fontFamily: "Arial"
+      }
+    })
+    
+    await restaurant.save()
 
-    const result = await db.collection("restaurants").insertOne(restaurant)
+    // Create user for restaurant owner
+    const user = new User({
+      email,
+      password: hashedPassword,
+      name: ownerName,
+      role: "restaurant_admin",
+      companyId: company._id,
+      restaurantId: restaurant._id,
+      permissions: [],
+      isActive: false // pending approval
+    })
+    
+    await user.save()
 
     // Restaurant registered successfully
     console.log(`Restaurant registered: ${email}`)
 
     return NextResponse.json({
       message: "تم تسجيل المطعم بنجاح. سيتم التواصل معك قريباً لتفعيل الحساب.",
-      restaurantId: result.insertedId,
+      restaurantId: restaurant._id,
     })
   } catch (error) {
     console.error("Registration error:", error)

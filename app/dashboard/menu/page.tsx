@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { MenuItemsManagement } from "@/components/dashboard/menu-items-management"
-import type { MenuItem, Category } from "@/lib/models/Company"
+import type { IMenuItem, ICategory } from "@/lib/models/mongoose"
 
 export default function MenuPage() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
+  const [menuItems, setMenuItems] = useState<IMenuItem[]>([])
+  const [categories, setCategories] = useState<ICategory[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function MenuPage() {
     fetchData()
   }, [])
 
-  const handleAddMenuItem = async (menuItemData: Omit<MenuItem, "_id" | "createdAt" | "updatedAt">) => {
+  const handleAddMenuItem = async (menuItemData: Omit<IMenuItem, "_id" | "createdAt" | "updatedAt">) => {
     try {
       const token = localStorage.getItem('token')
       const response = await fetch('/api/menu', {
@@ -61,7 +61,7 @@ export default function MenuPage() {
     }
   }
 
-  const handleEditMenuItem = async (id: string, menuItemData: Partial<MenuItem>) => {
+  const handleEditMenuItem = async (id: string, menuItemData: Partial<IMenuItem>) => {
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`/api/menu/${id}`, {

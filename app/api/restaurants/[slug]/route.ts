@@ -17,8 +17,8 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
     // Get categories and menu items
     const [categories, menuItems] = await Promise.all([
-      db.getCategoriesByRestaurant(restaurant._id!),
-      db.getMenuItemsByRestaurant(restaurant._id!),
+      db.getCategoriesByRestaurant(restaurant._id!.toString()),
+      db.getMenuItemsByRestaurant(restaurant._id!.toString()),
     ])
 
     return NextResponse.json({

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { connectToDatabase } from "@/lib/database"
+import { User } from "@/lib/models/mongoose"
+import connectDB from "@/lib/mongoose"
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,11 +12,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "جميع الحقول مطلوبة" }, { status: 400 })
     }
 
-    const { db } = await connectToDatabase()
+    await connectDB()
     console.log("Connected to database")
 
     // Check if admin already exists
-    const existingAdmin = await db.collection("admins").findOne({ email })
+    const existingAdmin = await User.findOne({ email, role: "super_admin" })
     console.log("Existing admin check:", existingAdmin)
     
     if (existingAdmin) {
@@ -27,21 +28,21 @@ export async function POST(request: NextRequest) {
     console.log("Password hashed")
 
     // Create admin
-    const adminData = {
+    const admin = new User({
       name,
       email,
       password: hashedPassword,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-    console.log("Admin data to insert:", { ...adminData })
+      role: "super_admin",
+      permissions: [],
+      isActive: true
+    })
     
-    const result = await db.collection("admins").insertOne(adminData)
+    const result = await admin.save()
     console.log("Insert result:", result)
 
     return NextResponse.json({
       message: "تم إنشاء حساب المدير بنجاح",
-      adminId: result.insertedId,
+      adminId: result._id,
     })
   } catch (error) {
     console.error("Create admin error:", error)

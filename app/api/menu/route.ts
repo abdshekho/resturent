@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { DatabaseService } from "@/lib/database"
 import { getAuthUser } from "@/lib/auth"
-import { ObjectId } from "mongodb"
 
 export async function GET(request: Request) {
   try {
@@ -10,9 +9,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "غير مصرح" }, { status: 401 })
     }
 
+    if (!user.restaurantId) {
+      return NextResponse.json({ error: "معرف المطعم غير موجود" }, { status: 400 })
+    }
+
     const db = DatabaseService.getInstance()
-    const menuItems = await db.getMenuItemsByRestaurant(new ObjectId(user.restaurantId))
+    const menuItems = await db.getMenuItemsByRestaurant(user.restaurantId)
     
+    console.log('Menu items found:', menuItems.length)
     return NextResponse.json(menuItems)
   } catch (error) {
     console.error("Error fetching menu items:", error)
@@ -33,8 +37,8 @@ export async function POST(request: Request) {
     // Ensure restaurantId is set from authenticated user
     const menuItemData = {
       ...body,
-      restaurantId: new ObjectId(user.restaurantId),
-      categoryId: new ObjectId(body.categoryId)
+      restaurantId: user.restaurantId,
+      categoryId: body.categoryId
     }
     
     const menuItem = await db.createMenuItem(menuItemData)

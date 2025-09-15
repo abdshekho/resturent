@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { connectToDatabase } from "@/lib/database"
+import { User, Restaurant } from "@/lib/models/mongoose"
+import connectDB from "@/lib/mongoose"
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
 
@@ -13,16 +14,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "جميع الحقول مطلوبة" }, { status: 400 })
     }
 
-    const { db } = await connectToDatabase()
+    await connectDB()
 
     // Find user based on type
     let user
     if (userType === "super-admin") {
-      user = await db.collection("admins").findOne({ email })
+      user = await User.findOne({ email, role: "super_admin" })
     } else {
-      user = await db.collection("restaurants").findOne({
-        "owner.email": email,
-      })
+      user = await User.findOne({ email, role: { $in: ["restaurant_admin", "restaurant_staff"] } })
     }
 
     if (!user) {
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check password
-    const passwordField = userType === "super-admin" ? user.password : user.owner.password
+    const passwordField = user.password
 
     
     const isPasswordValid = await bcrypt.compare(password, passwordField)
@@ -47,26 +46,29 @@ export async function POST(request: NextRequest) {
     const token = jwt.sign(
       {
         userId: user._id,
-        email: userType === "super-admin" ? user.email : user.owner.email,
+        email: user.email,
         userType,
-        restaurantId: userType === "restaurant-admin" ? user._id : null,
+        restaurantId: user.restaurantId,
       },
       JWT_SECRET,
       { expiresIn: "7d" },
     )
 
+    // Get restaurant data if needed
+    let restaurant = null
+    if (user.restaurantId) {
+      restaurant = await Restaurant.findById(user.restaurantId)
+    }
+
     // Return user data (without password)
-    const userData =
-      userType === "super-admin"
-        ? { id: user._id, email: user.email, name: user.name, userType }
-        : {
-            id: user._id,
-            email: user.owner.email,
-            name: user.owner.name,
-            userType,
-            restaurantId: user._id,
-            restaurantName: user.name,
-          }
+    const userData = {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      userType,
+      restaurantId: user.restaurantId,
+      restaurantName: restaurant?.name,
+    }
 
     return NextResponse.json({
       message: "تم تسجيل الدخول بنجاح",

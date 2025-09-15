@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { DatabaseService } from "@/lib/database"
-import { ObjectId } from "mongodb"
 
 export async function GET() {
   try {
@@ -21,7 +20,7 @@ export async function POST(request: Request) {
     
     const categoryData = {
       ...body,
-      restaurantId: new ObjectId(body.restaurantId)
+      restaurantId: body.restaurantId
     }
     
     const category = await db.createCategory(categoryData)

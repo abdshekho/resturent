@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { DatabaseService } from "@/lib/database"
-import { ObjectId } from "mongodb"
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +14,7 @@ export async function POST(request: NextRequest) {
     const db = DatabaseService.getInstance()
 
     // Verify restaurant exists and is active
-    const restaurant = await db.getRestaurantById(new ObjectId(restaurantId))
+    const restaurant = await db.getRestaurantById(restaurantId)
     if (!restaurant || !restaurant.settings.isActive || !restaurant.settings.acceptOrders) {
       return NextResponse.json({ error: "Restaurant is not accepting orders" }, { status: 403 })
     }
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Create order
     const order = await db.createOrder({
-      restaurantId: new ObjectId(restaurantId),
+      restaurantId,
       orderNumber,
       customerInfo,
       items,

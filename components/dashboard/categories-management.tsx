@@ -42,7 +42,9 @@ export function CategoriesManagement({
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [formData, setFormData] = useState({
     name: "",
+    nameAr: "",
     description: "",
+    descriptionAr: "",
     isActive: true,
     sortOrder: 0,
   })
@@ -61,13 +63,15 @@ export function CategoriesManagement({
       onAddCategory({
         restaurantId: restaurantId || user.restaurantId || '',
         name: formData.name,
+        nameAr: formData.nameAr,
         description: formData.description,
+        descriptionAr: formData.descriptionAr,
         isActive: formData.isActive,
         sortOrder: formData.sortOrder,
       })
     }
 
-    setFormData({ name: "", description: "", isActive: true, sortOrder: 0 })
+    setFormData({ name: "", nameAr: "", description: "", descriptionAr: "", isActive: true, sortOrder: 0 })
     setIsAddDialogOpen(false)
   }
 
@@ -75,7 +79,9 @@ export function CategoriesManagement({
     setEditingCategory(category)
     setFormData({
       name: category.name,
+      nameAr: category.nameAr || "",
       description: category.description || "",
+      descriptionAr: category.descriptionAr || "",
       isActive: category.isActive,
       sortOrder: category.sortOrder,
     })
@@ -153,24 +159,46 @@ export function CategoriesManagement({
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">اسم التصنيف</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                required
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">اسم التصنيف (إنجليزي)</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nameAr">اسم التصنيف (عربي)</Label>
+                <Input
+                  id="nameAr"
+                  value={formData.nameAr}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, nameAr: e.target.value }))}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">الوصف</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                rows={3}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="description">الوصف (إنجليزي)</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="descriptionAr">الوصف (عربي)</Label>
+                <Textarea
+                  id="descriptionAr"
+                  value={formData.descriptionAr}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, descriptionAr: e.target.value }))}
+                  rows={3}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

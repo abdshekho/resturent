@@ -64,7 +64,9 @@ export const RestaurantSchema = z.object({
 export const CategorySchema = z.object({
   restaurantId: z.string().min(1, 'معرف المطعم مطلوب'),
   name: z.string().min(1, 'اسم الفئة مطلوب'),
+  nameAr: z.string().min(1, 'الاسم العربي للفئة مطلوب'),
   description: z.string().optional(),
+  descriptionAr: z.string().optional(),
   image: z.string().optional(),
   sortOrder: z.number().default(0),
   isActive: z.boolean().default(true),

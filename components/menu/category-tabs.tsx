@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/components/language-provider"
 import type { Category } from "@/lib/models/Company"
 
 interface CategoryTabsProps {
@@ -10,6 +11,8 @@ interface CategoryTabsProps {
 }
 
 export function CategoryTabs({ categories, activeCategory, onCategoryChange }: CategoryTabsProps) {
+  const { language } = useLanguage()
+  
   return (
     <div className="sticky top-[69px] z-40 bg-background border-b">
       <div className="container mx-auto px-4 py-4">
@@ -20,7 +23,7 @@ export function CategoryTabs({ categories, activeCategory, onCategoryChange }: C
             onClick={() => onCategoryChange(null)}
             className={cn("whitespace-nowrap", activeCategory === null && "bg-primary text-primary-foreground")}
           >
-            الكل
+            {language === 'ar' ? 'الكل' : 'All'}
           </Button>
           {categories && categories?.length && categories.map((category) => (
             <Button
@@ -33,7 +36,7 @@ export function CategoryTabs({ categories, activeCategory, onCategoryChange }: C
                 activeCategory === category._id?.toString() && "bg-primary text-primary-foreground",
               )}
             >
-              {category.name}
+              {language === 'ar' ? category.nameAr || category.name : category.name}
             </Button>
           ))}
         </div>

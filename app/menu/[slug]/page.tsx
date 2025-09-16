@@ -5,6 +5,7 @@ import { MenuHeader } from "@/components/menu/menu-header"
 import { CategoryTabs } from "@/components/menu/category-tabs"
 import { MenuItemCard } from "@/components/menu/menu-item-card"
 import { CartSidebar } from "@/components/menu/cart-sidebar"
+import { LanguageProvider } from "@/components/language-provider"
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"
 
 interface CartItem {
@@ -177,14 +178,15 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <MenuHeader 
-        restaurant={restaurant} 
-        cartItemCount={cartItemCount} 
-        cartTotal={cartTotal} 
-        onCartClick={() => setIsCartOpen(true)} 
-      />
-      <CategoryTabs categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+    <LanguageProvider>
+      <div className="min-h-screen bg-background">
+        <MenuHeader 
+          restaurant={restaurant} 
+          cartItemCount={cartItemCount} 
+          cartTotal={cartTotal} 
+          onCartClick={() => setIsCartOpen(true)} 
+        />
+        <CategoryTabs categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-1 lg:gap-6 grid-cols-2 lg:grid-cols-3">
@@ -208,6 +210,7 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
         onRemoveItem={handleRemoveItem}
         onPlaceOrder={handlePlaceOrder}
       />
-    </div>
+      </div>
+    </LanguageProvider>
   )
 }

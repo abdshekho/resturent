@@ -122,7 +122,9 @@ const RestaurantSchema = new Schema<IRestaurant>({
 interface ICategory extends Document {
   restaurantId: mongoose.Types.ObjectId
   name: string
+  nameAr: string
   description?: string
+  descriptionAr?: string
   image?: string
   sortOrder: number
   isActive: boolean
@@ -133,7 +135,9 @@ interface ICategory extends Document {
 const CategorySchema = new Schema<ICategory>({
   restaurantId: { type: Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   name: { type: String, required: true },
+  nameAr: { type: String, required: true },
   description: String,
+  descriptionAr: String,
   image: String,
   sortOrder: { type: Number, default: 0 },
   isActive: { type: Boolean, default: true },

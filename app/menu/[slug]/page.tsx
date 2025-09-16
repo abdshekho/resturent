@@ -5,7 +5,6 @@ import { MenuHeader } from "@/components/menu/menu-header"
 import { CategoryTabs } from "@/components/menu/category-tabs"
 import { MenuItemCard } from "@/components/menu/menu-item-card"
 import { CartSidebar } from "@/components/menu/cart-sidebar"
-import { FloatingCartButton } from "@/components/menu/floating-cart-button"
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"
 
 interface CartItem {
@@ -179,11 +178,16 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
 
   return (
     <div className="min-h-screen bg-background">
-      <MenuHeader restaurant={restaurant} />
+      <MenuHeader 
+        restaurant={restaurant} 
+        cartItemCount={cartItemCount} 
+        cartTotal={cartTotal} 
+        onCartClick={() => setIsCartOpen(true)} 
+      />
       <CategoryTabs categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-1 lg:gap-6 grid-cols-2 lg:grid-cols-3">
           {filteredMenuItems && filteredMenuItems?.length &&filteredMenuItems.map((menuItem) => (
             <MenuItemCard key={menuItem._id?.toString()} menuItem={menuItem} onAddToCart={handleAddToCart} />
           ))}
@@ -195,8 +199,6 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
           </div>
         )}
       </main>
-
-      <FloatingCartButton itemCount={cartItemCount} total={cartTotal} onClick={() => setIsCartOpen(true)} />
 
       <CartSidebar
         isOpen={isCartOpen}

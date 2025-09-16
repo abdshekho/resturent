@@ -11,7 +11,7 @@ interface CategoryTabsProps {
 
 export function CategoryTabs({ categories, activeCategory, onCategoryChange }: CategoryTabsProps) {
   return (
-    <div className="sticky top-20 z-40 bg-background border-b">
+    <div className="sticky top-[69px] z-40 bg-background border-b">
       <div className="container mx-auto px-4 py-4">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           <Button

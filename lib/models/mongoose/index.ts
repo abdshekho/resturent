@@ -198,7 +198,7 @@ const MenuItemSchema = new Schema<IMenuItem>({
   isAvailable: { type: Boolean, default: true },
   isPopular: { type: Boolean, default: false },
   sortOrder: { type: Number, default: 0 },
-}, { timestamps: true, collection: 'menu_items' })
+}, { timestamps: true, collection: 'menuitems' })
 
 // Order Model
 interface IOrder extends Document {

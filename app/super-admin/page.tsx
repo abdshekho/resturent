@@ -25,12 +25,12 @@ export default function SuperAdminDashboard() {
           fetch('/api/super-admin/restaurants'),
           fetch('/api/super-admin/stats')
         ])
-        
+
         if (restaurantsRes.ok) {
           const restaurantsData = await restaurantsRes.json()
           setRestaurants(restaurantsData)
         }
-        
+
         if (statsRes.ok) {
           const statsData = await statsRes.json()
           setStats(statsData)
@@ -75,7 +75,7 @@ export default function SuperAdminDashboard() {
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         setRestaurants((prev) => [...prev, result.restaurant])
       } else {
@@ -99,31 +99,27 @@ export default function SuperAdminDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
-      <SuperAdminSidebar />
-
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground">لوحة تحكم المدير العام</h1>
-            <p className="text-muted-foreground">مراقبة وإدارة جميع المطاعم في النظام</p>
-          </div>
-
-          <div className="space-y-8">
-            <StatsCards stats={stats} />
-
-            <RestaurantsTable
-              restaurants={restaurants}
-              onAddRestaurant={() => setIsAddDialogOpen(true)}
-              onViewRestaurant={handleViewRestaurant}
-              onEditRestaurant={handleEditRestaurant}
-              onDeleteRestaurant={handleDeleteRestaurant}
-            />
-          </div>
+    <main className="flex-1 overflow-y-auto">
+      <div className="p-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground">لوحة تحكم المدير العام</h1>
+          <p className="text-muted-foreground">مراقبة وإدارة جميع المطاعم في النظام</p>
         </div>
-      </main>
 
-      <AddRestaurantDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} onSubmit={handleAddRestaurant} />
-    </div>
+        <div className="space-y-8">
+          <StatsCards stats={ stats } />
+
+          <RestaurantsTable
+            restaurants={ restaurants }
+            onAddRestaurant={ () => setIsAddDialogOpen(true) }
+            onViewRestaurant={ handleViewRestaurant }
+            onEditRestaurant={ handleEditRestaurant }
+            onDeleteRestaurant={ handleDeleteRestaurant }
+          />
+        </div>
+      </div>
+      <AddRestaurantDialog open={ isAddDialogOpen } onOpenChange={ setIsAddDialogOpen } onSubmit={ handleAddRestaurant } />
+    </main>
+
   )
 }

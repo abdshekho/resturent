@@ -1,53 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-// Company Model
-interface ICompany extends Document {
-  name: string
-  description: string
-  logo?: string
-  website?: string
-  email: string
-  phone: string
-  address: {
-    street: string
-    city: string
-    state: string
-    country: string
-    zipCode: string
-  }
-  settings: {
-    allowRegistration: boolean
-    maxRestaurants: number
-    subscriptionPlan: 'basic' | 'premium' | 'enterprise'
-  }
-  createdAt: Date
-  updatedAt: Date
-}
 
-const CompanySchema = new Schema<ICompany>({
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  logo: String,
-  website: String,
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  address: {
-    street: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    country: { type: String, required: true },
-    zipCode: { type: String, required: true },
-  },
-  settings: {
-    allowRegistration: { type: Boolean, default: true },
-    maxRestaurants: { type: Number, default: 5 },
-    subscriptionPlan: { type: String, enum: ['basic', 'premium', 'enterprise'], default: 'basic' },
-  },
-}, { timestamps: true, collection: 'companies' })
 
 // Restaurant Model
 interface IRestaurant extends Document {
-  companyId: mongoose.Types.ObjectId
   name: string
   slug: string
   description: string
@@ -86,7 +42,6 @@ interface IRestaurant extends Document {
 }
 
 const RestaurantSchema = new Schema<IRestaurant>({
-  companyId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   description: { type: String, required: true },
@@ -94,14 +49,14 @@ const RestaurantSchema = new Schema<IRestaurant>({
   coverImage: String,
   cuisine: [String],
   contact: {
-    email: { type: String, required: true },
-    phone: { type: String, required: true },
+    email: { type: String},
+    phone: { type: String},
     address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      country: { type: String, required: true },
-      zipCode: { type: String, required: true },
+      street: { type: String},
+      city: { type: String},
+      state: { type: String},
+      country: { type: String},
+      zipCode: { type: String},
     },
   },
   settings: {
@@ -261,7 +216,6 @@ interface IUser extends Document {
   password: string
   name: string
   role: 'super_admin' | 'restaurant_admin' | 'restaurant_staff'
-  companyId?: mongoose.Types.ObjectId
   restaurantId?: mongoose.Types.ObjectId
   permissions: string[]
   isActive: boolean
@@ -275,7 +229,6 @@ const UserSchema = new Schema<IUser>({
   password: { type: String, required: true },
   name: { type: String, required: true },
   role: { type: String, enum: ['super_admin', 'restaurant_admin', 'restaurant_staff'], required: true },
-  companyId: { type: Schema.Types.ObjectId, ref: 'Company' },
   restaurantId: { type: Schema.Types.ObjectId, ref: 'Restaurant' },
   permissions: [String],
   isActive: { type: Boolean, default: true },
@@ -283,7 +236,6 @@ const UserSchema = new Schema<IUser>({
 }, { timestamps: true, collection: 'users' })
 
 // Export models
-export const Company = mongoose.models.Company || mongoose.model<ICompany>('Company', CompanySchema)
 export const Restaurant = mongoose.models.Restaurant || mongoose.model<IRestaurant>('Restaurant', RestaurantSchema)
 export const Category = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema)
 export const MenuItem = mongoose.models.MenuItem || mongoose.model<IMenuItem>('MenuItem', MenuItemSchema)
@@ -291,4 +243,4 @@ export const Order = mongoose.models.Order || mongoose.model<IOrder>('Order', Or
 export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
 
 // Export interfaces
-export type { ICompany, IRestaurant, ICategory, IMenuItem, IOrder, IUser }
+export type { IRestaurant, ICategory, IMenuItem, IOrder, IUser }

@@ -1,8 +1,8 @@
 import connectDB from './mongoose'
-import { Company, Restaurant, Category, MenuItem, Order, User } from './models/mongoose'
-import type { ICompany, IRestaurant, ICategory, IMenuItem, IOrder, IUser } from './models/mongoose'
-import { CompanySchema, RestaurantSchema, CategorySchema, MenuItemSchema, OrderSchema, UserSchema } from './schemas'
-import type { CompanyType, RestaurantType, CategoryType, MenuItemType, OrderType, UserType } from './schemas'
+import { Restaurant, Category, MenuItem, Order, User } from './models/mongoose'
+import type { IRestaurant, ICategory, IMenuItem, IOrder, IUser } from './models/mongoose'
+import { RestaurantSchema, CategorySchema, MenuItemSchema, OrderSchema, UserSchema } from './schemas'
+import type { RestaurantType, CategoryType, MenuItemType, OrderType, UserType } from './schemas'
 
 export class MongooseDatabaseService {
   private static instance: MongooseDatabaseService
@@ -18,19 +18,6 @@ export class MongooseDatabaseService {
     await connectDB()
   }
 
-  // Company operations
-  async createCompany(companyData: CompanyType): Promise<ICompany> {
-    await this.connect()
-    const validatedData = CompanySchema.parse(companyData)
-    const company = new Company(validatedData)
-    return await company.save()
-  }
-
-  async getCompany(): Promise<ICompany | null> {
-    await this.connect()
-    return await Company.findOne({})
-  }
-
   // Restaurant operations
   async createRestaurant(restaurantData: RestaurantType): Promise<IRestaurant> {
     await this.connect()
@@ -41,7 +28,7 @@ export class MongooseDatabaseService {
 
   async getRestaurantBySlug(slug: string): Promise<IRestaurant | null> {
     await this.connect()
-    return await Restaurant.findOne({ slug }).populate('companyId')
+    return await Restaurant.findOne({ slug })
   }
 
   async getRestaurantsByCompany(companyId: string): Promise<IRestaurant[]> {
@@ -51,7 +38,7 @@ export class MongooseDatabaseService {
 
   async getRestaurantById(id: string): Promise<IRestaurant | null> {
     await this.connect()
-    return await Restaurant.findById(id).populate('companyId')
+    return await Restaurant.findById(id)
   }
 
   // Category operations

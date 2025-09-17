@@ -5,27 +5,8 @@ const bcrypt = require('bcryptjs')
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/myRestaurents')
 
 // Define schemas
-const CompanySchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  email: String,
-  phone: String,
-  address: {
-    street: String,
-    city: String,
-    state: String,
-    country: String,
-    zipCode: String
-  },
-  settings: {
-    allowRegistration: { type: Boolean, default: true },
-    maxRestaurants: { type: Number, default: 100 },
-    subscriptionPlan: { type: String, default: 'basic' }
-  }
-}, { timestamps: true, collection: 'companies' })
 
 const RestaurantSchema = new mongoose.Schema({
-  companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
   name: String,
   slug: String,
   description: String,
@@ -60,7 +41,6 @@ const UserSchema = new mongoose.Schema({
   password: String,
   name: String,
   role: String,
-  companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
   restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
   permissions: [String],
   isActive: { type: Boolean, default: true }
@@ -85,7 +65,6 @@ const MenuItemSchema = new mongoose.Schema({
   sortOrder: { type: Number, default: 0 }
 }, { timestamps: true, collection: 'menuitems' })
 
-const Company = mongoose.model('Company', CompanySchema)
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema)
 const User = mongoose.model('User', UserSchema)
 const Category = mongoose.model('Category', CategorySchema)
@@ -94,31 +73,16 @@ const MenuItem = mongoose.model('MenuItem', MenuItemSchema)
 async function seedData() {
   try {
     // Clear existing data
-    await Company.deleteMany({})
     await Restaurant.deleteMany({})
     await User.deleteMany({})
     await Category.deleteMany({})
     await MenuItem.deleteMany({})
 
     // Create company
-    const company = new Company({
-      name: 'شركة المطاعم',
-      description: 'شركة إدارة المطاعم',
-      email: 'admin@restaurants.com',
-      phone: '123456789',
-      address: {
-        street: 'شارع الملك فهد',
-        city: 'الرياض',
-        state: 'الرياض',
-        country: 'السعودية',
-        zipCode: '12345'
-      }
-    })
-    await company.save()
+
 
     // Create restaurant
     const restaurant = new Restaurant({
-      companyId: company._id,
       name: 'مطعم الأصالة',
       slug: 'asala',
       description: 'مطعم للأكلات الشعبية',
@@ -144,7 +108,6 @@ async function seedData() {
       password: hashedPassword,
       name: 'مدير المطعم',
       role: 'restaurant_admin',
-      companyId: company._id,
       restaurantId: restaurant._id,
       permissions: []
     })

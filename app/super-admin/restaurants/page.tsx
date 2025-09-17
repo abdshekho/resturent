@@ -1,11 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { SuperAdminSidebar } from "@/components/super-admin/sidebar"
 import { RestaurantsTable } from "@/components/super-admin/restaurants-table"
 import { AddRestaurantDialog, type RestaurantFormData } from "@/components/super-admin/add-restaurant-dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -90,7 +88,6 @@ export default function RestaurantsPage() {
             ...data.theme,
             fontFamily: "Arial",
           },
-          companyId: "507f1f77bcf86cd799439012",
         }),
       })
 

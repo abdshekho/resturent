@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { Restaurant, User, Company } from "@/lib/models/mongoose"
+import { Restaurant, User } from "@/lib/models/mongoose"
 import connectDB from "@/lib/mongoose"
 
 export async function POST(request: NextRequest) {
@@ -23,33 +23,8 @@ export async function POST(request: NextRequest) {
     // Hash the provided password
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Get or create default company
-    let company = await Company.findOne({})
-    if (!company) {
-      company = new Company({
-        name: "Default Company",
-        description: "Default company for restaurants",
-        email: "admin@example.com",
-        phone: "123456789",
-        address: {
-          street: "Default Street",
-          city: "Default City",
-          state: "Default State",
-          country: "Default Country",
-          zipCode: "12345"
-        },
-        settings: {
-          allowRegistration: true,
-          maxRestaurants: 100,
-          subscriptionPlan: "basic"
-        }
-      })
-      await company.save()
-    }
-
     // Create restaurant
     const restaurant = new Restaurant({
-      companyId: company._id,
       name: restaurantName,
       slug: restaurantName
         .toLowerCase()
@@ -90,7 +65,6 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
       name: ownerName,
       role: "restaurant_admin",
-      companyId: company._id,
       restaurantId: restaurant._id,
       permissions: [],
       isActive: false // pending approval

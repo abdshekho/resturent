@@ -1,32 +1,7 @@
 import mongoose from 'mongoose'
 
-export interface Company {
-  _id?: string
-  name: string
-  description: string
-  logo?: string
-  website?: string
-  email: string
-  phone: string
-  address: {
-    street: string
-    city: string
-    state: string
-    country: string
-    zipCode: string
-  }
-  settings: {
-    allowRegistration: boolean
-    maxRestaurants: number
-    subscriptionPlan: 'basic' | 'premium' | 'enterprise'
-  }
-  createdAt?: Date
-  updatedAt?: Date
-}
-
 export interface Restaurant {
   _id?: string
-  companyId: string
   name: string
   slug: string
   description: string
@@ -143,7 +118,6 @@ export interface User {
   password: string
   name: string
   role: 'super_admin' | 'restaurant_admin' | 'restaurant_staff'
-  companyId?: string
   restaurantId?: string
   permissions: string[]
   isActive: boolean

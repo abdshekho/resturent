@@ -1,30 +1,10 @@
 import { z } from 'zod'
 
 // Company Schema
-export const CompanySchema = z.object({
-  name: z.string().min(1, 'اسم الشركة مطلوب'),
-  description: z.string().min(1, 'وصف الشركة مطلوب'),
-  logo: z.string().optional(),
-  website: z.string().url('رابط الموقع غير صحيح').optional(),
-  email: z.string().email('البريد الإلكتروني غير صحيح'),
-  phone: z.string().min(1, 'رقم الهاتف مطلوب'),
-  address: z.object({
-    street: z.string().min(1, 'الشارع مطلوب'),
-    city: z.string().min(1, 'المدينة مطلوبة'),
-    state: z.string().min(1, 'المحافظة مطلوبة'),
-    country: z.string().min(1, 'البلد مطلوب'),
-    zipCode: z.string().min(1, 'الرمز البريدي مطلوب'),
-  }),
-  settings: z.object({
-    allowRegistration: z.boolean().default(true),
-    maxRestaurants: z.number().min(1).default(5),
-    subscriptionPlan: z.enum(['basic', 'premium', 'enterprise']).default('basic'),
-  }),
-})
+
 
 // Restaurant Schema
 export const RestaurantSchema = z.object({
-  companyId: z.string().min(1, 'معرف الشركة مطلوب'),
   name: z.string().min(1, 'اسم المطعم مطلوب'),
   slug: z.string().min(1, 'الرابط المختصر مطلوب'),
   description: z.string().min(1, 'وصف المطعم مطلوب'),
@@ -124,7 +104,6 @@ export const UserSchema = z.object({
   password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
   name: z.string().min(1, 'الاسم مطلوب'),
   role: z.enum(['super_admin', 'restaurant_admin', 'restaurant_staff']),
-  companyId: z.string().optional(),
   restaurantId: z.string().optional(),
   permissions: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
@@ -132,7 +111,7 @@ export const UserSchema = z.object({
 })
 
 // Export types
-export type CompanyType = z.infer<typeof CompanySchema>
+
 export type RestaurantType = z.infer<typeof RestaurantSchema>
 export type CategoryType = z.infer<typeof CategorySchema>
 export type MenuItemType = z.infer<typeof MenuItemSchema>

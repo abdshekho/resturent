@@ -69,8 +69,7 @@ export default function SuperAdminDashboard() {
           theme: {
             ...data.theme,
             fontFamily: "Arial",
-          },
-          companyId: "507f1f77bcf86cd799439012", // Default company ID
+          }
         }),
       })
 

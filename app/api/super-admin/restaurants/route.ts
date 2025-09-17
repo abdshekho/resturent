@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
     
     const restaurant = new Restaurant({
-      companyId: data.companyId,
       name: data.name,
       slug: data.slug,
       description: data.description,

@@ -151,14 +151,6 @@ interface IMenuItem extends Document {
   description: string
   price: number
   image?: string
-  ingredients?: string[]
-  allergens?: string[]
-  nutritionalInfo?: {
-    calories?: number
-    protein?: number
-    carbs?: number
-    fat?: number
-  }
   options?: {
     name: string
     type: 'single' | 'multiple'
@@ -182,14 +174,6 @@ const MenuItemSchema = new Schema<IMenuItem>({
   description: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
   image: String,
-  ingredients: [String],
-  allergens: [String],
-  nutritionalInfo: {
-    calories: Number,
-    protein: Number,
-    carbs: Number,
-    fat: Number,
-  },
   options: [{
     name: String,
     type: { type: String, enum: ['single', 'multiple'] },

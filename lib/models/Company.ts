@@ -86,14 +86,6 @@ export interface MenuItem {
   description: string
   price: number
   image?: string
-  ingredients?: string[]
-  allergens?: string[]
-  nutritionalInfo?: {
-    calories?: number
-    protein?: number
-    carbs?: number
-    fat?: number
-  }
   options?: {
     name: string
     type: 'single' | 'multiple'

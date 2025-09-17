@@ -47,7 +47,6 @@ export function MenuItemsManagement({
     description: "",
     price: 0,
     categoryId: "",
-    ingredients: [] as string[],
     isAvailable: true,
     isPopular: false,
     sortOrder: 0,
@@ -70,7 +69,6 @@ export function MenuItemsManagement({
         name: formData.name,
         description: formData.description,
         price: formData.price,
-        ingredients: formData.ingredients,
         isAvailable: formData.isAvailable,
         isPopular: formData.isPopular,
         sortOrder: formData.sortOrder,
@@ -82,7 +80,6 @@ export function MenuItemsManagement({
       description: "",
       price: 0,
       categoryId: "",
-      ingredients: [],
       isAvailable: true,
       isPopular: false,
       sortOrder: 0,
@@ -97,7 +94,6 @@ export function MenuItemsManagement({
       description: menuItem.description,
       price: menuItem.price,
       categoryId: menuItem.categoryId.toString(),
-      ingredients: menuItem.ingredients || [],
       isAvailable: menuItem.isAvailable,
       isPopular: menuItem.isPopular,
       sortOrder: menuItem.sortOrder,
@@ -171,9 +167,6 @@ export function MenuItemsManagement({
                     <span className="text-lg font-bold text-primary">{menuItem.price} ريال</span>
                     <span className="text-xs text-muted-foreground">ترتيب: {menuItem.sortOrder}</span>
                   </div>
-                  {menuItem.ingredients && menuItem.ingredients.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-2">المكونات: {menuItem.ingredients.join(", ")}</p>
-                  )}
                 </CardContent>
               </Card>
             ))}
@@ -241,24 +234,6 @@ export function MenuItemsManagement({
                 value={formData.description}
                 onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                 rows={3}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="ingredients">المكونات (مفصولة بفاصلة)</Label>
-              <Input
-                id="ingredients"
-                value={formData.ingredients.join(", ")}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    ingredients: e.target.value
-                      .split(",")
-                      .map((s) => s.trim())
-                      .filter(Boolean),
-                  }))
-                }
-                placeholder="طماطم, خس, جبن"
               />
             </div>
 

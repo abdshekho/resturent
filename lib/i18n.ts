@@ -24,7 +24,6 @@ export const translations = {
     price: "السعر (ريال)",
     category: "التصنيف",
     description: "الوصف",
-    ingredients: "المكونات",
     available: "متوفر",
     popular: "طبق مميز",
     
@@ -61,7 +60,6 @@ export const translations = {
     price: "Price (SAR)",
     category: "Category",
     description: "Description",
-    ingredients: "Ingredients",
     available: "Available",
     popular: "Popular Dish",
     

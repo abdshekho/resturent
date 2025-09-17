@@ -80,23 +80,6 @@ export const MenuItemSchema = z.object({
   description: z.string().min(1, 'وصف الطبق مطلوب'),
   price: z.number().min(0, 'السعر يجب أن يكون أكبر من أو يساوي صفر'),
   image: z.string().optional(),
-  ingredients: z.array(z.string()).default([]),
-  allergens: z.array(z.string()).default([]),
-  nutritionalInfo: z.object({
-    calories: z.number().optional(),
-    protein: z.number().optional(),
-    carbs: z.number().optional(),
-    fat: z.number().optional(),
-  }).optional(),
-  options: z.array(z.object({
-    name: z.string(),
-    type: z.enum(['single', 'multiple']),
-    required: z.boolean(),
-    choices: z.array(z.object({
-      name: z.string(),
-      price: z.number(),
-    })),
-  })).default([]),
   isAvailable: z.boolean().default(true),
   isPopular: z.boolean().default(false),
   sortOrder: z.number().default(0),

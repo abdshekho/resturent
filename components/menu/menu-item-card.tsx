@@ -61,9 +61,6 @@ export function MenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps) {
 
           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{menuItem.description}</p>
 
-          {menuItem.ingredients && menuItem.ingredients.length > 0 && (
-            <p className="text-xs text-muted-foreground mb-3">المكونات: {menuItem.ingredients.join(", ")}</p>
-          )}
 
           {/* Add to Cart */}
           {menuItem.isAvailable && (

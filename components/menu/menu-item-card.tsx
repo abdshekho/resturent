@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Minus, Star, ImageIcon } from "lucide-react"
 import type { MenuItem } from "@/lib/models/Company"
+import { useLanguage } from "../language-provider"
 
 interface MenuItemCardProps {
   menuItem: MenuItem
@@ -14,6 +15,7 @@ interface MenuItemCardProps {
 
 export function MenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps) {
   const [quantity, setQuantity] = useState(0)
+  const { language } = useLanguage()
 
   const handleAddToCart = () => {
     if (quantity > 0) {
@@ -55,11 +57,11 @@ export function MenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps) {
         {/* Content */}
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-lg text-foreground">{menuItem.name}</h3>
+            <h3 className="font-semibold text-lg text-foreground">{language === 'ar' ? menuItem.nameAr : menuItem.name}</h3>
             <span className="text-lg font-bold text-primary">{menuItem.price} ريال</span>
           </div>
 
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{menuItem.description}</p>
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{language === 'ar' ? menuItem.descriptionAr : menuItem.description}</p>
 
 
           {/* Add to Cart */}

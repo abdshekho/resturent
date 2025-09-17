@@ -97,7 +97,7 @@ export function CategoriesManagement({
             <CardDescription>إضافة وتعديل تصنيفات القائمة</CardDescription>
           </div>
           <Button
-            onClick={() => setIsAddDialogOpen(true)}
+            onClick={ () => setIsAddDialogOpen(true) }
             className="bg-accent hover:bg-accent/90 text-accent-foreground"
           >
             <Plus className="ml-2 h-4 w-4" />
@@ -106,13 +106,13 @@ export function CategoriesManagement({
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {categories.map((category) => (
-              <Card key={category._id?.toString()} className="relative">
+            { categories.map((category) => (
+              <Card key={ category._id?.toString() } className="relative">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Package className="h-5 w-5 text-primary" />
-                      <CardTitle className="text-lg">{category.name}</CardTitle>
+                      <CardTitle className="text-lg">{ category.name }</CardTitle>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -121,12 +121,12 @@ export function CategoriesManagement({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(category)}>
+                        <DropdownMenuItem onClick={ () => handleEdit(category) }>
                           <Edit className="ml-2 h-4 w-4" />
                           تعديل
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => onDeleteCategory(category._id?.toString() || "")}
+                          onClick={ () => onDeleteCategory(category._id?.toString() || "") }
                           className="text-destructive"
                         >
                           <Trash2 className="ml-2 h-4 w-4" />
@@ -135,70 +135,75 @@ export function CategoriesManagement({
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <Badge variant={category.isActive ? "default" : "secondary"}>
-                    {category.isActive ? "نشط" : "غير نشط"}
+                  <Badge variant={ category.isActive ? "default" : "secondary" }>
+                    { category.isActive ? "نشط" : "غير نشط" }
                   </Badge>
                 </CardHeader>
                 <CardContent>
-                  {category.description && <p className="text-sm text-muted-foreground">{category.description}</p>}
-                  <p className="text-xs text-muted-foreground mt-2">ترتيب: {category.sortOrder}</p>
+                  { category.description && <p className="text-sm text-muted-foreground">{ category.description }</p> }
+                  <p className="text-xs text-muted-foreground mt-2">ترتيب: { category.sortOrder }</p>
                 </CardContent>
               </Card>
-            ))}
+            )) }
           </div>
         </CardContent>
       </Card>
 
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      <Dialog open={ isAddDialogOpen } onOpenChange={ setIsAddDialogOpen }>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingCategory ? "تعديل التصنيف" : "إضافة تصنيف جديد"}</DialogTitle>
+            <DialogTitle>{ editingCategory ? "تعديل التصنيف" : "إضافة تصنيف جديد" }</DialogTitle>
             <DialogDescription>
-              {editingCategory ? "تعديل معلومات التصنيف" : "أدخل معلومات التصنيف الجديد"}
+              { editingCategory ? "تعديل معلومات التصنيف" : "أدخل معلومات التصنيف الجديد" }
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={ handleSubmit } className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">اسم التصنيف (إنجليزي)</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                  required
-                />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="nameAr">اسم التصنيف (عربي)</Label>
                 <Input
                   id="nameAr"
-                  value={formData.nameAr}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, nameAr: e.target.value }))}
+                  dir="rtl"
+                  value={ formData.nameAr }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, nameAr: e.target.value })) }
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">اسم التصنيف (إنجليزي)</Label>
+                <Input
+                  id="name"
+                  dir="ltr"
+                  value={ formData.name }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, name: e.target.value })) }
                   required
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-2">
+                <Label htmlFor="descriptionAr">الوصف (عربي)</Label>
+                <Textarea
+                  id="descriptionAr"
+                  dir="rtl"
+                  value={ formData.descriptionAr }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, descriptionAr: e.target.value })) }
+                  rows={ 3 }
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="description">الوصف (إنجليزي)</Label>
                 <Textarea
                   id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  rows={3}
+                  dir="ltr"
+                  value={ formData.description }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, description: e.target.value })) }
+                  rows={ 3 }
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="descriptionAr">الوصف (عربي)</Label>
-                <Textarea
-                  id="descriptionAr"
-                  value={formData.descriptionAr}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, descriptionAr: e.target.value }))}
-                  rows={3}
-                />
-              </div>
+             
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -207,8 +212,8 @@ export function CategoriesManagement({
                 <Input
                   id="sortOrder"
                   type="number"
-                  value={formData.sortOrder}
-                  onChange={(e) =>
+                  value={ formData.sortOrder }
+                  onChange={ (e) =>
                     setFormData((prev) => ({ ...prev, sortOrder: Number.parseInt(e.target.value) || 0 }))
                   }
                 />
@@ -218,18 +223,18 @@ export function CategoriesManagement({
                 <Label htmlFor="isActive">تصنيف نشط</Label>
                 <Switch
                   id="isActive"
-                  checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isActive: checked }))}
+                  checked={ formData.isActive }
+                  onCheckedChange={ (checked) => setFormData((prev) => ({ ...prev, isActive: checked })) }
                 />
               </div>
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={ () => setIsAddDialogOpen(false) }>
                 إلغاء
               </Button>
               <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                {editingCategory ? "حفظ التغييرات" : "إضافة التصنيف"}
+                { editingCategory ? "حفظ التغييرات" : "إضافة التصنيف" }
               </Button>
             </DialogFooter>
           </form>

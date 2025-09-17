@@ -4,9 +4,12 @@ import { DatabaseService } from "@/lib/database"
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
+
+    console.log('🚀 ~ route.ts ~ PUT ~ body:', body);
+
     const db = DatabaseService.getInstance()
-    
-    const menuItem = await db.updateMenuItem(params.id, body)
+    const resolvedparams = await params;
+    const menuItem = await db.updateMenuItem(resolvedparams.id, body)
     
     return NextResponse.json(menuItem)
   } catch (error) {

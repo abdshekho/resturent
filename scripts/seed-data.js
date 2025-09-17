@@ -80,7 +80,6 @@ const MenuItemSchema = new mongoose.Schema({
   name: String,
   description: String,
   price: Number,
-  ingredients: [String],
   isAvailable: { type: Boolean, default: true },
   isPopular: { type: Boolean, default: false },
   sortOrder: { type: Number, default: 0 }
@@ -176,7 +175,6 @@ async function seedData() {
         name: 'حمص بالطحينة',
         description: 'حمص طازج مع الطحينة والزيت',
         price: 15,
-        ingredients: ['حمص', 'طحينة', 'زيت زيتون'],
         sortOrder: 1
       },
       {
@@ -185,7 +183,6 @@ async function seedData() {
         name: 'متبل',
         description: 'متبل باذنجان مشوي',
         price: 12,
-        ingredients: ['باذنجان', 'طحينة', 'ثوم'],
         sortOrder: 2
       },
       {
@@ -194,7 +191,6 @@ async function seedData() {
         name: 'كبسة لحم',
         description: 'كبسة لحم بالخضار والتوابل',
         price: 45,
-        ingredients: ['أرز', 'لحم', 'خضار', 'توابل'],
         isPopular: true,
         sortOrder: 1
       },
@@ -204,7 +200,6 @@ async function seedData() {
         name: 'مندي دجاج',
         description: 'مندي دجاج مع الأرز المدخن',
         price: 35,
-        ingredients: ['دجاج', 'أرز', 'توابل'],
         sortOrder: 2
       }
     ]

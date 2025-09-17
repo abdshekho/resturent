@@ -44,7 +44,9 @@ export function MenuItemsManagement({
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null)
   const [formData, setFormData] = useState({
     name: "",
+    nameAr: "",
     description: "",
+    descriptionAr: "",
     price: 0,
     categoryId: "",
     isAvailable: true,
@@ -67,7 +69,9 @@ export function MenuItemsManagement({
         restaurantId: user?.restaurantId || "",
         categoryId: formData.categoryId,
         name: formData.name,
+        nameAr: formData.nameAr,
         description: formData.description,
+        descriptionAr: formData.descriptionAr,
         price: formData.price,
         isAvailable: formData.isAvailable,
         isPopular: formData.isPopular,
@@ -77,7 +81,9 @@ export function MenuItemsManagement({
 
     setFormData({
       name: "",
+      nameAr: "",
       description: "",
+      descriptionAr: "",
       price: 0,
       categoryId: "",
       isAvailable: true,
@@ -91,7 +97,9 @@ export function MenuItemsManagement({
     setEditingMenuItem(menuItem)
     setFormData({
       name: menuItem.name,
+      nameAr: menuItem.nameAr || "",
       description: menuItem.description,
+      descriptionAr: menuItem.descriptionAr || "",
       price: menuItem.price,
       categoryId: menuItem.categoryId.toString(),
       isAvailable: menuItem.isAvailable,
@@ -115,7 +123,7 @@ export function MenuItemsManagement({
             <CardDescription>إضافة وتعديل الأطباق والمشروبات</CardDescription>
           </div>
           <Button
-            onClick={() => setIsAddDialogOpen(true)}
+            onClick={ () => setIsAddDialogOpen(true) }
             className="bg-accent hover:bg-accent/90 text-accent-foreground"
           >
             <Plus className="ml-2 h-4 w-4" />
@@ -124,14 +132,14 @@ export function MenuItemsManagement({
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {menuItems.map((menuItem) => (
-              <Card key={menuItem._id?.toString()} className="relative">
+            { menuItems.map((menuItem) => (
+              <Card key={ menuItem._id?.toString() } className="relative">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <ImageIcon className="h-5 w-5 text-primary" />
-                      <CardTitle className="text-lg">{menuItem.name}</CardTitle>
-                      {menuItem.isPopular && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
+                      <CardTitle className="text-lg">{ menuItem.name }</CardTitle>
+                      { menuItem.isPopular && <Star className="h-4 w-4 text-yellow-500 fill-current" /> }
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -140,12 +148,12 @@ export function MenuItemsManagement({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(menuItem)}>
+                        <DropdownMenuItem onClick={ () => handleEdit(menuItem) }>
                           <Edit className="ml-2 h-4 w-4" />
                           تعديل
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => onDeleteMenuItem(menuItem._id?.toString() || "")}
+                          onClick={ () => onDeleteMenuItem(menuItem._id?.toString() || "") }
                           className="text-destructive"
                         >
                           <Trash2 className="ml-2 h-4 w-4" />
@@ -155,126 +163,153 @@ export function MenuItemsManagement({
                     </DropdownMenu>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={menuItem.isAvailable ? "default" : "secondary"}>
-                      {menuItem.isAvailable ? "متوفر" : "غير متوفر"}
+                    <Badge variant={ menuItem.isAvailable ? "default" : "secondary" }>
+                      { menuItem.isAvailable ? "متوفر" : "غير متوفر" }
                     </Badge>
-                    <Badge variant="outline">{getCategoryName(menuItem.categoryId)}</Badge>
+                    <Badge variant="outline">{ getCategoryName(menuItem.categoryId) }</Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-2">{menuItem.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{ menuItem.description }</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-primary">{menuItem.price} ريال</span>
-                    <span className="text-xs text-muted-foreground">ترتيب: {menuItem.sortOrder}</span>
+                    <span className="text-lg font-bold text-primary">{ menuItem.price } ريال</span>
+                    <span className="text-xs text-muted-foreground">ترتيب: { menuItem.sortOrder }</span>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )) }
           </div>
         </CardContent>
       </Card>
 
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      <Dialog open={ isAddDialogOpen } onOpenChange={ setIsAddDialogOpen }>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingMenuItem ? "تعديل الطبق" : "إضافة طبق جديد"}</DialogTitle>
+            <DialogTitle>{ editingMenuItem ? "تعديل الطبق" : "إضافة طبق جديد" }</DialogTitle>
             <DialogDescription>
-              {editingMenuItem ? "تعديل معلومات الطبق" : "أدخل معلومات الطبق الجديد"}
+              { editingMenuItem ? "تعديل معلومات الطبق" : "أدخل معلومات الطبق الجديد" }
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={ handleSubmit } className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">اسم الطبق</Label>
+                <Label htmlFor="nameAr">اسم الطبق (عربي)</Label>
+                <Input
+                  id="nameAr"
+                  dir="rtl"
+                  value={ formData.nameAr }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, nameAr: e.target.value })) }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">اسم الطبق (إنجليزي)</Label>
                 <Input
                   id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                  dir="ltr"
+                  value={ formData.name }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, name: e.target.value })) }
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="price">السعر (ريال)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, price: Number.parseFloat(e.target.value) || 0 }))}
-                  required
-                />
-              </div>
+
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price">السعر (ريال)</Label>
+              <Input
+                id="price"
+                type="number"
+                step="1000"
+                value={ formData.price }
+                onChange={ (e) => setFormData((prev) => ({ ...prev, price: Number.parseFloat(e.target.value) || 0 })) }
+                required
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="categoryId">التصنيف</Label>
               <Select
-                value={formData.categoryId}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, categoryId: value }))}
+                value={ formData.categoryId }
+                onValueChange={ (value) => setFormData((prev) => ({ ...prev, categoryId: value })) }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="اختر التصنيف" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category._id?.toString()} value={category._id?.toString() || ""}>
-                      {category.name}
+                  { categories.map((category) => (
+                    <SelectItem key={ category._id?.toString() } value={ category._id?.toString() || "" }>
+                      { category.name + ' - ' + category.nameAr }
                     </SelectItem>
-                  ))}
+                  )) }
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">الوصف</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                rows={3}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="descriptionAr">الوصف (عربي)</Label>
+                <Textarea
+                  id="descriptionAr"
+                  dir="rtl"
+                  value={ formData.descriptionAr }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, descriptionAr: e.target.value })) }
+                  rows={ 3 }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">الوصف (إنجليزي)</Label>
+                <Textarea
+                  id="description"
+                  dir="ltr"
+                  value={ formData.description }
+                  onChange={ (e) => setFormData((prev) => ({ ...prev, description: e.target.value })) }
+                  rows={ 3 }
+                />
+              </div>
+
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sortOrder">ترتيب العرض</Label>
                 <Input
                   id="sortOrder"
                   type="number"
-                  value={formData.sortOrder}
-                  onChange={(e) =>
+                  value={ formData.sortOrder }
+                  onChange={ (e) =>
                     setFormData((prev) => ({ ...prev, sortOrder: Number.parseInt(e.target.value) || 0 }))
                   }
                 />
               </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="isAvailable">متوفر</Label>
+                  <Switch
+                    id="isAvailable"
+                    checked={ formData.isAvailable }
+                    onCheckedChange={ (checked) => setFormData((prev) => ({ ...prev, isAvailable: checked })) }
+                  />
+                </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="isAvailable">متوفر</Label>
-                <Switch
-                  id="isAvailable"
-                  checked={formData.isAvailable}
-                  onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isAvailable: checked }))}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <Label htmlFor="isPopular">طبق مميز</Label>
-                <Switch
-                  id="isPopular"
-                  checked={formData.isPopular}
-                  onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isPopular: checked }))}
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="isPopular">طبق مميز</Label>
+                  <Switch
+                    id="isPopular"
+                    checked={ formData.isPopular }
+                    onCheckedChange={ (checked) => setFormData((prev) => ({ ...prev, isPopular: checked })) }
+                  />
+                </div>
               </div>
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={ () => setIsAddDialogOpen(false) }>
                 إلغاء
               </Button>
               <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                {editingMenuItem ? "حفظ التغييرات" : "إضافة الطبق"}
+                { editingMenuItem ? "حفظ التغييرات" : "إضافة الطبق" }
               </Button>
             </DialogFooter>
           </form>

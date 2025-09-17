@@ -148,7 +148,9 @@ interface IMenuItem extends Document {
   restaurantId: mongoose.Types.ObjectId
   categoryId: mongoose.Types.ObjectId
   name: string
+  nameAr?: string
   description: string
+  descriptionAr?: string
   price: number
   image?: string
   options?: {
@@ -171,7 +173,9 @@ const MenuItemSchema = new Schema<IMenuItem>({
   restaurantId: { type: Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
   name: { type: String, required: true },
+  nameAr:  { type: String, required: true },
   description: { type: String, required: true },
+  descriptionAr:  { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
   image: String,
   options: [{

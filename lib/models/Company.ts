@@ -83,7 +83,9 @@ export interface MenuItem {
   restaurantId: string
   categoryId: string
   name: string
+  nameAr: string
   description: string
+  descriptionAr: string
   price: number
   image?: string
   options?: {

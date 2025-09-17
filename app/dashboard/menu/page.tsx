@@ -15,17 +15,17 @@ export default function MenuPage() {
       try {
         const token = localStorage.getItem('token')
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {}
-        
+
         const [menuRes, categoriesRes] = await Promise.all([
           fetch('/api/menu', { headers }),
           fetch('/api/categories', { headers })
         ])
-        
+
         if (menuRes.ok) {
           const menuData = await menuRes.json()
           setMenuItems(menuData)
         }
-        
+
         if (categoriesRes.ok) {
           const categoriesData = await categoriesRes.json()
           setCategories(categoriesData)
@@ -41,17 +41,20 @@ export default function MenuPage() {
   }, [])
 
   const handleAddMenuItem = async (menuItemData: Omit<IMenuItem, "_id" | "createdAt" | "updatedAt">) => {
+
+    console.log('🚀 ~ page.tsx ~ handleAddMenuItem ~ menuItemData:', menuItemData);
+
     try {
       const token = localStorage.getItem('token')
       const response = await fetch('/api/menu', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           ...(token && { 'Authorization': `Bearer ${token}` })
         },
         body: JSON.stringify(menuItemData)
       })
-      
+
       if (response.ok) {
         const newMenuItem = await response.json()
         setMenuItems(prev => [...prev, newMenuItem])
@@ -62,21 +65,22 @@ export default function MenuPage() {
   }
 
   const handleEditMenuItem = async (id: string, menuItemData: Partial<IMenuItem>) => {
+
+    console.log('🚀 ~ page.tsx ~ handleEditMenuItem ~ menuItemData:', menuItemData);
+
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`/api/menu/${id}`, {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           ...(token && { 'Authorization': `Bearer ${token}` })
         },
         body: JSON.stringify(menuItemData)
       })
-      
+
       if (response.ok) {
-        setMenuItems(prev =>
-          prev.map(item => item._id?.toString() === id ? { ...item, ...menuItemData } : item)
-        )
+        setMenuItems(prev => prev.map(item => item._id?.toString() === id ? { ...item, ...menuItemData } : item))
       }
     } catch (error) {
       console.error('Error updating menu item:', error)
@@ -92,7 +96,7 @@ export default function MenuPage() {
           ...(token && { 'Authorization': `Bearer ${token}` })
         }
       })
-      
+
       if (response.ok) {
         setMenuItems(prev => prev.filter(item => item._id?.toString() !== id))
       }
@@ -127,11 +131,11 @@ export default function MenuPage() {
           </div>
 
           <MenuItemsManagement
-            menuItems={menuItems}
-            categories={categories}
-            onAddMenuItem={handleAddMenuItem}
-            onEditMenuItem={handleEditMenuItem}
-            onDeleteMenuItem={handleDeleteMenuItem}
+            menuItems={ menuItems }
+            categories={ categories }
+            onAddMenuItem={ handleAddMenuItem }
+            onEditMenuItem={ handleEditMenuItem }
+            onDeleteMenuItem={ handleDeleteMenuItem }
           />
         </div>
       </main>

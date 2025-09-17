@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users } from "lucide-react"
+import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users, ChevronLeft, ChevronRight } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/components/language-provider"
@@ -13,6 +14,7 @@ import { useLanguage } from "@/components/language-provider"
 export function DashboardSidebar() {
   const pathname = usePathname()
   const { t } = useLanguage()
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   const navigation = [
     {
@@ -53,18 +55,29 @@ export function DashboardSidebar() {
   ]
 
   return (
-    <div className="flex h-full w-64 flex-col bg-card border-l">
+    <div className={cn(
+      "flex h-full flex-col bg-card border-l transition-all duration-300",
+      isCollapsed ? "w-16" : "w-64"
+    )}>
       {/* Logo */}
       <div className="flex h-16 items-center gap-2 px-6 border-b">
         <QrCode className="h-8 w-8 text-primary" />
-        <div>
-          <span className="text-lg font-bold text-foreground">مطعم الأصالة</span>
-          <p className="text-xs text-muted-foreground">لوحة التحكم</p>
-        </div>
+        {!isCollapsed && (
+          <div>
+            <span className="text-lg font-bold text-foreground">مطعم الأصالة</span>
+            <p className="text-xs text-muted-foreground">لوحة التحكم</p>
+          </div>
+        )}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="ml-auto p-1 rounded hover:bg-muted"
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className={cn("flex-1 space-y-1",isCollapsed ? "p-1 md:p-2" : "p-4")}>
         {navigation.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -76,10 +89,12 @@ export function DashboardSidebar() {
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                isCollapsed && "justify-center"
               )}
+              title={isCollapsed ? item.name : undefined}
             >
               <item.icon className="h-5 w-5" />
-              {item.name}
+              {!isCollapsed && item.name}
             </Link>
           )
         })}
@@ -89,19 +104,33 @@ export function DashboardSidebar() {
       <div className="p-4 border-t space-y-2">
         <Link
           href="/dashboard/qr"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className={cn(
+            "flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground",
+            isCollapsed && "justify-center"
+          )}
+          title={isCollapsed ? "عرض رمز QR" : undefined}
         >
           <QrCode className="h-4 w-4" />
-          عرض رمز QR
+          {!isCollapsed && "عرض رمز QR"}
         </Link>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">{t("theme")}</span>
-          <ThemeToggle />
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">{t("language")}</span>
-          <LanguageToggle />
-        </div>
+        {!isCollapsed && (
+          <>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{t("theme")}</span>
+              <ThemeToggle />
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{t("language")}</span>
+              <LanguageToggle />
+            </div>
+          </>
+        )}
+        {isCollapsed && (
+          <div className="flex flex-col items-center gap-2">
+            <ThemeToggle />
+            <LanguageToggle />
+          </div>
+        )}
       </div>
     </div>
   )

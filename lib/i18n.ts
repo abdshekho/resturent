@@ -31,6 +31,22 @@ export const translations = {
     theme: "المظهر",
     language: "اللغة",
     
+    // Staff Management
+    staffManagement: "إدارة الموظفين",
+    addNewStaff: "إضافة موظف جديد",
+    staffName: "اسم الموظف",
+    email: "البريد الإلكتروني",
+    phone: "رقم الهاتف",
+    role: "الدور الوظيفي",
+    status: "الحالة",
+    active: "نشط",
+    inactive: "غير نشط",
+    admin: "مدير",
+    // staff: "موظف",
+    lastLogin: "آخر تسجيل دخول",
+    actions: "الإجراءات",
+    noStaffFound: "لا يوجد موظفين",
+    
     // Restaurant
     restaurantDashboard: "لوحة تحكم المطعم",
     welcomeMessage: "مرحباً بك في لوحة تحكم مطعم الأصالة"
@@ -66,6 +82,22 @@ export const translations = {
     // Theme & Language
     theme: "Theme",
     language: "Language",
+    
+    // Staff Management
+    staffManagement: "Staff Management",
+    addNewStaff: "Add New Staff",
+    staffName: "Staff Name",
+    email: "Email",
+    phone: "Phone",
+    role: "Role",
+    status: "Status",
+    active: "Active",
+    inactive: "Inactive",
+    admin: "Admin",
+    // staff: "Staff",
+    lastLogin: "Last Login",
+    actions: "Actions",
+    noStaffFound: "No staff found",
     
     // Restaurant
     restaurantDashboard: "Restaurant Dashboard",

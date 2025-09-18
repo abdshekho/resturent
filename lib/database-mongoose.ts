@@ -137,6 +137,16 @@ export class MongooseDatabaseService {
     return await User.find({ restaurantId })
   }
 
+  async updateUser(id: string, userData: Partial<UserType>): Promise<IUser | null> {
+    await this.connect()
+    return await User.findByIdAndUpdate(id, userData, { new: true })
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await this.connect()
+    await User.findByIdAndDelete(id)
+  }
+
   // Dashboard stats methods
   async getRecentOrders(limit: number = 10): Promise<IOrder[]> {
     await this.connect()

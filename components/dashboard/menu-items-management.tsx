@@ -42,6 +42,7 @@ export function MenuItemsManagement({
   const { user } = useAuth()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [formData, setFormData] = useState({
     name: "",
     nameAr: "",
@@ -114,6 +115,10 @@ export function MenuItemsManagement({
     return category?.name || "غير محدد"
   }
 
+  const filteredMenuItems = selectedCategory && selectedCategory !== "all"
+    ? menuItems.filter((item) => item.categoryId.toString() === selectedCategory)
+    : menuItems
+
   return (
     <div className="space-y-6">
       <Card>
@@ -131,8 +136,23 @@ export function MenuItemsManagement({
           </Button>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="تصفية حسب التصنيف" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع التصنيفات</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category._id?.toString()} value={category._id?.toString() || ""}>
+                    {category.name} - {category.nameAr}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            { menuItems.map((menuItem) => (
+            { filteredMenuItems.map((menuItem) => (
               <Card key={ menuItem._id?.toString() } className="relative">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -235,7 +255,7 @@ export function MenuItemsManagement({
                 onValueChange={ (value) => setFormData((prev) => ({ ...prev, categoryId: value })) }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="اختر التصنيف" />
+                  <SelectValue placeholder="اختر التصنيف - select categoy" />
                 </SelectTrigger>
                 <SelectContent>
                   { categories.map((category) => (

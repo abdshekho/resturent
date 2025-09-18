@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardStats } from "@/components/dashboard/dashboard-stats"
 import { RecentOrders } from "@/components/dashboard/recent-orders"
 import { useLanguage } from "@/components/language-provider"

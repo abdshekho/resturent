@@ -59,7 +59,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="flex-1 overflow-y-auto p-10">
+    <main className="flex-1 overflow-y-auto p-10 space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-6 w-6" />
         <h1 className="text-2xl font-bold">الإعدادات</h1>

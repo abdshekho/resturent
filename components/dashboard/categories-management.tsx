@@ -19,7 +19,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Plus, MoreHorizontal, Edit, Trash2, Package } from "lucide-react"
+import { Plus, MoreHorizontal, Edit, Trash2, Package, Upload } from "lucide-react"
+import { ImageUpload } from "@/components/ui/image-upload"
 import type { Category } from "@/lib/models/Company"
 
 
@@ -47,32 +48,69 @@ export function CategoriesManagement({
     descriptionAr: "",
     isActive: true,
     sortOrder: 0,
+    image: "",
   })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleFileUpload = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('categoryName', formData.name || 'category')
 
-    if (editingCategory) {
-      onEditCategory(editingCategory._id?.toString() || "", {
-        ...formData,
-        updatedAt: new Date(),
-      })
-      setEditingCategory(null)
-    } else {
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
-      onAddCategory({
-        restaurantId: restaurantId || user.restaurantId || '',
-        name: formData.name,
-        nameAr: formData.nameAr,
-        description: formData.description,
-        descriptionAr: formData.descriptionAr,
-        isActive: formData.isActive,
-        sortOrder: formData.sortOrder,
-      })
+    const response = await fetch('/api/upload/category-image', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image')
     }
 
-    setFormData({ name: "", nameAr: "", description: "", descriptionAr: "", isActive: true, sortOrder: 0 })
-    setIsAddDialogOpen(false)
+    const result = await response.json()
+    return result.imageUrl
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setUploading(true)
+
+    try {
+      let imageUrl = formData.image
+
+      if (selectedFile) {
+        imageUrl = await handleFileUpload(selectedFile)
+      }
+
+      if (editingCategory) {
+        onEditCategory(editingCategory._id?.toString() || "", {
+          ...formData,
+          image: imageUrl,
+          updatedAt: new Date(),
+        })
+        setEditingCategory(null)
+      } else {
+        const user = JSON.parse(localStorage.getItem('user') || '{}')
+        onAddCategory({
+          restaurantId: restaurantId || user.restaurantId || '',
+          name: formData.name,
+          nameAr: formData.nameAr,
+          description: formData.description,
+          descriptionAr: formData.descriptionAr,
+          isActive: formData.isActive,
+          sortOrder: formData.sortOrder,
+          image: imageUrl,
+        })
+      }
+
+      setFormData({ name: "", nameAr: "", description: "", descriptionAr: "", isActive: true, sortOrder: 0, image: "" })
+      setSelectedFile(null)
+      setIsAddDialogOpen(false)
+    } catch (error) {
+      console.error('Error uploading image:', error)
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleEdit = (category: Category) => {
@@ -84,6 +122,7 @@ export function CategoriesManagement({
       descriptionAr: category.descriptionAr || "",
       isActive: category.isActive,
       sortOrder: category.sortOrder,
+      image: category.image || "",
     })
     setIsAddDialogOpen(true)
   }
@@ -140,6 +179,15 @@ export function CategoriesManagement({
                   </Badge>
                 </CardHeader>
                 <CardContent>
+                  {category.image && (
+                    <div className="mb-3">
+                      <img 
+                        src={category.image} 
+                        alt={category.name} 
+                        className="w-full h-32 object-cover rounded-md"
+                      />
+                    </div>
+                  )}
                   { category.description && <p className="text-sm text-muted-foreground">{ category.description }</p> }
                   <p className="text-xs text-muted-foreground mt-2">ترتيب: { category.sortOrder }</p>
                 </CardContent>
@@ -206,26 +254,36 @@ export function CategoriesManagement({
              
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="sortOrder">ترتيب العرض</Label>
-                <Input
-                  id="sortOrder"
-                  type="number"
-                  value={ formData.sortOrder }
-                  onChange={ (e) =>
-                    setFormData((prev) => ({ ...prev, sortOrder: Number.parseInt(e.target.value) || 0 }))
-                  }
-                />
-              </div>
+            <div className="space-y-4">
+              <ImageUpload
+                value={formData.image}
+                onChange={(url) => setFormData(prev => ({ ...prev, image: url }))}
+                onFileSelect={setSelectedFile}
+                uploading={uploading}
+                label="صورة التصنيف"
+              />
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="isActive">تصنيف نشط</Label>
-                <Switch
-                  id="isActive"
-                  checked={ formData.isActive }
-                  onCheckedChange={ (checked) => setFormData((prev) => ({ ...prev, isActive: checked })) }
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sortOrder">ترتيب العرض</Label>
+                  <Input
+                    id="sortOrder"
+                    type="number"
+                    value={ formData.sortOrder }
+                    onChange={ (e) =>
+                      setFormData((prev) => ({ ...prev, sortOrder: Number.parseInt(e.target.value) || 0 }))
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="isActive">تصنيف نشط</Label>
+                  <Switch
+                    id="isActive"
+                    checked={ formData.isActive }
+                    onCheckedChange={ (checked) => setFormData((prev) => ({ ...prev, isActive: checked })) }
+                  />
+                </div>
               </div>
             </div>
 
@@ -233,8 +291,19 @@ export function CategoriesManagement({
               <Button type="button" variant="outline" onClick={ () => setIsAddDialogOpen(false) }>
                 إلغاء
               </Button>
-              <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                { editingCategory ? "حفظ التغييرات" : "إضافة التصنيف" }
+              <Button 
+                type="submit" 
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                disabled={uploading}
+              >
+                {uploading ? (
+                  <>
+                    <Upload className="ml-2 h-4 w-4 animate-spin" />
+                    جاري الرفع...
+                  </>
+                ) : (
+                  editingCategory ? "حفظ التغييرات" : "إضافة التصنيف"
+                )}
               </Button>
             </DialogFooter>
           </form>

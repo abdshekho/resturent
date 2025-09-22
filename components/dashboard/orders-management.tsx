@@ -22,7 +22,7 @@ const statusColors = {
   confirmed: "bg-blue-100 text-blue-800", 
   preparing: "bg-orange-100 text-orange-800",
   ready: "bg-green-100 text-green-800",
-  delivered: "bg-gray-100 text-gray-800",
+  delivered: "dark:bg-gray-100 dark:text-gray-800 bg-gray-800 text-gray-100",
   cancelled: "bg-red-100 text-red-800"
 }
 
@@ -262,7 +262,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus,
                       {order.status === 'pending' && (
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'confirmed')}
-                          className="bg-blue-600 hover:bg-blue-700"
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
                           disabled={loadingStatus}
                         >
                           تأكيد الطلب
@@ -273,7 +273,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus,
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'preparing')}
                           disabled={loadingStatus}
-                          className="bg-orange-600 hover:bg-orange-700"
+                          className="bg-orange-600 hover:bg-orange-700 text-white"
                         >
                           بدء التحضير
                         </Button>
@@ -283,7 +283,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus,
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'ready')}
                           disabled={loadingStatus}
-                          className="bg-green-600 hover:bg-green-700"
+                          className="bg-green-600 hover:bg-green-700 text-white"
                         >
                           جاهز للاستلام
                         </Button>
@@ -293,7 +293,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus,
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'delivered')}
                           disabled={loadingStatus}
-                          className="bg-gray-600 hover:bg-gray-700"
+                          className="bg-gray-600 hover:bg-gray-700 text-white"
                         >
                           تم التسليم
                         </Button>

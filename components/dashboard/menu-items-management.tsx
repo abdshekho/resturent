@@ -42,7 +42,7 @@ export function MenuItemsManagement({
   const { user } = useAuth()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string>("")
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [formData, setFormData] = useState({
     name: "",
     nameAr: "",

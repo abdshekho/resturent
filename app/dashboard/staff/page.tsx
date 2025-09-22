@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useLanguage } from "@/components/language-provider"
-import { Plus, Edit, Trash2, Users, Search } from "lucide-react"
+import { Plus, Edit, Trash2, Users, Search, UserCheck, UserCog, UserX, UserPlus } from "lucide-react"
 import type { User } from "@/lib/models/Company"
 
 export default function StaffPage() {
@@ -21,8 +21,8 @@ export default function StaffPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password:'123456',
-    restaurantId:'68c832d18c7b51ef8c81433b',
+    password: '123456',
+    restaurantId: '68c832d18c7b51ef8c81433b',
     role: "restaurant_staff" as const,
     isActive: true
   })
@@ -53,7 +53,7 @@ export default function StaffPage() {
     try {
       const url = editingStaff ? `/api/staff/${editingStaff._id}` : '/api/staff'
       const method = editingStaff ? 'PUT' : 'POST'
-      
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -107,12 +107,12 @@ export default function StaffPage() {
   // تصفية الموظفين
   const filteredStaff = staff.filter(member => {
     const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.email.toLowerCase().includes(searchTerm.toLowerCase())
+      member.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRole = filterRole === "all" || member.role === filterRole
-    const matchesStatus = filterStatus === "all" || 
-                         (filterStatus === "active" && member.isActive) ||
-                         (filterStatus === "inactive" && !member.isActive)
-    
+    const matchesStatus = filterStatus === "all" ||
+      (filterStatus === "active" && member.isActive) ||
+      (filterStatus === "inactive" && !member.isActive)
+
     return matchesSearch && matchesRole && matchesStatus
   })
 
@@ -126,7 +126,7 @@ export default function StaffPage() {
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">{t("loading")}</p>
+          <p className="mt-4 text-muted-foreground">{ t("loading") }</p>
         </div>
       </main>
     )
@@ -137,47 +137,47 @@ export default function StaffPage() {
       <div className="p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{t("staffManagement")}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{ t("staffManagement") }</h1>
             <p className="text-muted-foreground">إدارة فريق العمل في المطعم</p>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={ isDialogOpen } onOpenChange={ setIsDialogOpen }>
             <DialogTrigger asChild>
-              <Button onClick={() => setIsDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                {t("addNewStaff")}
+              <Button onClick={ () => setIsDialogOpen(true) }>
+                <UserPlus className="w-4 h-4 mr-2" />
+                { t("addNewStaff") }
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>
-                  {editingStaff ? t("edit") : t("addNewStaff")}
+                  { editingStaff ? t("edit") : t("addNewStaff") }
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={ handleSubmit } className="space-y-4">
                 <div>
-                  <Label htmlFor="name">{t("staffName")}</Label>
+                  <Label htmlFor="name">{ t("staffName") }</Label>
                   <Input
                     id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={ formData.name }
+                    onChange={ (e) => setFormData({ ...formData, name: e.target.value }) }
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email">{t("email")}</Label>
+                  <Label htmlFor="email">{ t("email") }</Label>
                   <Input
                     id="email"
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    value={ formData.email }
+                    onChange={ (e) => setFormData({ ...formData, email: e.target.value }) }
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">{t("role")}</Label>
+                  <Label htmlFor="role">{ t("role") }</Label>
                   <Select
-                    value={formData.role}
-                    onValueChange={(value: "restaurant_admin" | "restaurant_staff") => 
+                    value={ formData.role }
+                    onValueChange={ (value: "restaurant_admin" | "restaurant_staff") =>
                       setFormData({ ...formData, role: value })
                     }
                   >
@@ -185,16 +185,16 @@ export default function StaffPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="restaurant_admin">{t("admin")}</SelectItem>
-                      <SelectItem value="restaurant_staff">{t("staff")}</SelectItem>
+                      <SelectItem value="restaurant_admin">{ t("admin") }</SelectItem>
+                      <SelectItem value="restaurant_staff">{ t("staff") }</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="status">{t("status")}</Label>
+                  <Label htmlFor="status">{ t("status") }</Label>
                   <Select
-                    value={formData.isActive ? "active" : "inactive"}
-                    onValueChange={(value) => 
+                    value={ formData.isActive ? "active" : "inactive" }
+                    onValueChange={ (value) =>
                       setFormData({ ...formData, isActive: value === "active" })
                     }
                   >
@@ -202,17 +202,17 @@ export default function StaffPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">{t("active")}</SelectItem>
-                      <SelectItem value="inactive">{t("inactive")}</SelectItem>
+                      <SelectItem value="active">{ t("active") }</SelectItem>
+                      <SelectItem value="inactive">{ t("inactive") }</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex justify-end space-x-2 space-x-reverse">
-                  <Button type="button" variant="outline" onClick={handleDialogClose}>
-                    {t("cancel")}
+                  <Button type="button" variant="outline" onClick={ handleDialogClose }>
+                    { t("cancel") }
                   </Button>
                   <Button type="submit">
-                    {t("save")}
+                    { t("save") }
                   </Button>
                 </div>
               </form>
@@ -220,14 +220,14 @@ export default function StaffPage() {
           </Dialog>
         </div>
 
-        {/* إحصائيات سريعة */}
+        {/* إحصائيات سريعة */ }
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">إجمالي الموظفين</p>
-                  <p className="text-2xl font-bold">{staff.length}</p>
+                  <p className="text-sm font-medium">إجمالي الموظفين</p>
+                  <p className="text-2xl font-bold text-primary">{ staff.length }</p>
                 </div>
                 <Users className="h-8 w-8 text-primary" />
               </div>
@@ -237,14 +237,12 @@ export default function StaffPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">الموظفين النشطين</p>
+                  <p className="text-sm font-medium">الموظفين النشطين</p>
                   <p className="text-2xl font-bold text-green-600">
-                    {staff.filter(s => s.isActive).length}
+                    { staff.filter(s => s.isActive).length }
                   </p>
                 </div>
-                <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                  <div className="h-3 w-3 rounded-full bg-green-600"></div>
-                </div>
+                <UserCheck className="h-8 w-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
@@ -252,14 +250,13 @@ export default function StaffPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">المديرين</p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {staff.filter(s => s.role === 'restaurant_admin').length}
+                  <p className="text-sm font-medium">المديرين</p>
+                  <p className="text-2xl font-bold dark:text-blue-600 text-blue-800">
+                    { staff.filter(s => s.role === 'restaurant_admin').length }
                   </p>
                 </div>
-                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <div className="h-3 w-3 rounded-full bg-blue-600"></div>
-                </div>
+                <UserCog className="h-8 w-8 dark:text-blue-600 text-blue-800" />
+
               </div>
             </CardContent>
           </Card>
@@ -267,14 +264,12 @@ export default function StaffPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">الموظفين غير النشطين</p>
+                  <p className="text-sm font-medium">الموظفين غير النشطين</p>
                   <p className="text-2xl font-bold text-red-600">
-                    {staff.filter(s => !s.isActive).length}
+                    { staff.filter(s => !s.isActive).length }
                   </p>
                 </div>
-                <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
-                  <div className="h-3 w-3 rounded-full bg-red-600"></div>
-                </div>
+                <UserX className="h-8 w-8 text-red-600" />
               </div>
             </CardContent>
           </Card>
@@ -289,72 +284,72 @@ export default function StaffPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* فلاتر البحث */}
+              {/* فلاتر البحث */ }
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <div className="flex-1">
                   <Input
                     placeholder="بحث بالاسم أو البريد الإلكتروني..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={ searchTerm }
+                    onChange={ (e) => setSearchTerm(e.target.value) }
                   />
                 </div>
-                <Select value={filterRole} onValueChange={setFilterRole}>
+                <Select value={ filterRole } onValueChange={ setFilterRole }>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="تصفية بالدور" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">جميع الأدوار</SelectItem>
-                    <SelectItem value="restaurant_admin">{t("admin")}</SelectItem>
-                    <SelectItem value="restaurant_staff">{t("staff")}</SelectItem>
+                    <SelectItem value="restaurant_admin">{ t("admin") }</SelectItem>
+                    <SelectItem value="restaurant_staff">{ t("staff") }</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <Select value={ filterStatus } onValueChange={ setFilterStatus }>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="تصفية بالحالة" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">جميع الحالات</SelectItem>
-                    <SelectItem value="active">{t("active")}</SelectItem>
-                    <SelectItem value="inactive">{t("inactive")}</SelectItem>
+                    <SelectItem value="active">{ t("active") }</SelectItem>
+                    <SelectItem value="inactive">{ t("inactive") }</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {filteredStaff.length === 0 ? (
+              { filteredStaff.length === 0 ? (
                 <div className="text-center py-8">
                   <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">{t("noStaffFound")}</p>
+                  <p className="text-muted-foreground">{ t("noStaffFound") }</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-right p-4">{t("staffName")}</th>
-                        <th className="text-right p-4">{t("email")}</th>
-                        <th className="text-right p-4">{t("role")}</th>
-                        <th className="text-right p-4">{t("status")}</th>
-                        <th className="text-right p-4">{t("lastLogin")}</th>
-                        <th className="text-right p-4">{t("actions")}</th>
+                        <th className="text-right p-4">{ t("staffName") }</th>
+                        <th className="text-right p-4">{ t("email") }</th>
+                        <th className="text-right p-4">{ t("role") }</th>
+                        <th className="text-right p-4">{ t("status") }</th>
+                        <th className="text-right p-4">{ t("lastLogin") }</th>
+                        <th className="text-right p-4">{ t("actions") }</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredStaff.map((member) => (
-                        <tr key={member._id} className="border-b hover:bg-muted/50">
-                          <td className="p-4 font-medium">{member.name}</td>
-                          <td className="p-4 text-muted-foreground">{member.email}</td>
+                      { filteredStaff.map((member) => (
+                        <tr key={ member._id } className="border-b hover:bg-muted/50">
+                          <td className="p-4 font-medium">{ member.name }</td>
+                          <td className="p-4 text-muted-foreground">{ member.email }</td>
                           <td className="p-4">
-                            <Badge variant={member.role === 'restaurant_admin' ? 'default' : 'secondary'}>
-                              {member.role === 'restaurant_admin' ? t("admin") : t("staff")}
+                            <Badge variant={ member.role === 'restaurant_admin' ? 'blue' : 'default' }>
+                              { member.role === 'restaurant_admin' ? t("admin") : t("employee") }
                             </Badge>
                           </td>
                           <td className="p-4">
-                            <Badge variant={member.isActive ? 'default' : 'destructive'}>
-                              {member.isActive ? t("active") : t("inactive")}
+                            <Badge variant={ member.isActive ? 'success' : 'destructive' }>
+                              { member.isActive ? t("active") : t("inactive") }
                             </Badge>
                           </td>
                           <td className="p-4 text-muted-foreground">
-                            {member.lastLogin 
+                            { member.lastLogin
                               ? new Date(member.lastLogin).toLocaleDateString('ar-SA')
                               : 'لم يسجل دخول بعد'
                             }
@@ -364,25 +359,25 @@ export default function StaffPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => handleEdit(member)}
+                                onClick={ () => handleEdit(member) }
                               >
                                 <Edit className="w-4 h-4" />
                               </Button>
                               <Button
                                 size="sm"
                                 variant="destructive"
-                                onClick={() => handleDelete(member._id!)}
+                                onClick={ () => handleDelete(member._id!) }
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      )) }
                     </tbody>
                   </table>
                 </div>
-              )}
+              ) }
             </CardContent>
           </Card>
         </div>

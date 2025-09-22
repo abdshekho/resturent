@@ -41,11 +41,12 @@ export const translations = {
     status: "الحالة",
     active: "نشط",
     inactive: "غير نشط",
-    admin: "مدير",
+    admin: "مسؤول",
     // staff: "موظف",
     lastLogin: "آخر تسجيل دخول",
     actions: "الإجراءات",
     noStaffFound: "لا يوجد موظفين",
+    employee: "موظف",
     
     // Restaurant
     restaurantDashboard: "لوحة تحكم المطعم",
@@ -98,6 +99,7 @@ export const translations = {
     lastLogin: "Last Login",
     actions: "Actions",
     noStaffFound: "No staff found",
+    employee: "Staff",
     
     // Restaurant
     restaurantDashboard: "Restaurant Dashboard",

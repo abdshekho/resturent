@@ -8,6 +8,7 @@ import type { IOrder } from "@/lib/models/mongoose"
 export default function OrdersPage() {
   const [orders, setOrders] = useState<IOrder[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingStatus, setLoadingStatus] = useState(false)
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -32,6 +33,7 @@ export default function OrdersPage() {
   }, [])
 
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
+    setLoadingStatus(true)
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`/api/dashboard/orders/${orderId}`, {
@@ -51,6 +53,7 @@ export default function OrdersPage() {
     } catch (error) {
       console.error('Error updating order status:', error)
     }
+    setLoadingStatus(false)
   }
 
   if (loading) {
@@ -74,6 +77,8 @@ export default function OrdersPage() {
 
           <OrdersManagement
             orders={orders}
+            loadingStatus={loadingStatus}
+            setLoadingStatus={setLoadingStatus}
             onUpdateOrderStatus={handleUpdateOrderStatus}
           />
         </div>

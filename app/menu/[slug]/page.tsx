@@ -1,11 +1,8 @@
 "use client"
 
 import { useState, useMemo, useEffect, use } from "react"
-import { MenuHeader } from "@/components/menu/menu-header"
-import { CategoryTabs } from "@/components/menu/category-tabs"
-import { MenuItemCard } from "@/components/menu/menu-item-card"
-import { CartSidebar } from "@/components/menu/cart-sidebar"
 import { LanguageProvider } from "@/components/language-provider"
+import { TemplateSelector } from "@/components/menu/templates/TemplateSelector"
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"
 
 interface CartItem {
@@ -179,38 +176,24 @@ export default function MenuPage({ params }: { params: Promise<{ slug: string }>
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-background">
-        <MenuHeader 
-          restaurant={restaurant} 
-          cartItemCount={cartItemCount} 
-          cartTotal={cartTotal} 
-          onCartClick={() => setIsCartOpen(true)} 
-        />
-        <CategoryTabs categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-1 lg:gap-6 grid-cols-2 lg:grid-cols-3">
-          {filteredMenuItems && filteredMenuItems?.length &&filteredMenuItems.map((menuItem) => (
-            <MenuItemCard key={menuItem._id?.toString()} menuItem={menuItem} onAddToCart={handleAddToCart} />
-          ))}
-        </div>
-
-        {filteredMenuItems.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">لا توجد أطباق في هذا التصنيف</p>
-          </div>
-        )}
-      </main>
-
-      <CartSidebar
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
+      <TemplateSelector
+        template={restaurant.template || 'classic'}
+        restaurant={restaurant}
+        categories={categories}
+        filteredMenuItems={filteredMenuItems}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         cartItems={cartItems}
+        cartItemCount={cartItemCount}
+        cartTotal={cartTotal}
+        isCartOpen={isCartOpen}
+        onCartClick={() => setIsCartOpen(true)}
+        onCartClose={() => setIsCartOpen(false)}
+        onAddToCart={handleAddToCart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onPlaceOrder={handlePlaceOrder}
       />
-      </div>
     </LanguageProvider>
   )
 }

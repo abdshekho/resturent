@@ -7,7 +7,8 @@ export async function PUT(
 ) {
   try {
     const { status } = await request.json()
-    const orderId = params.id
+    const resolvedParams = await params
+    const orderId =  resolvedParams.id
 
     if (!orderId || !status) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })

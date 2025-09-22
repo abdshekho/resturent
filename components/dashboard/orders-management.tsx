@@ -12,6 +12,9 @@ import type { IOrder } from "@/lib/models/mongoose"
 interface OrdersManagementProps {
   orders: IOrder[]
   onUpdateOrderStatus: (orderId: string, status: string) => void
+  setLoadingStatus: (loading: boolean) => void
+  loadingStatus: boolean
+  
 }
 
 const statusColors = {
@@ -32,7 +35,7 @@ const statusLabels = {
   cancelled: "ملغي"
 }
 
-export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManagementProps) {
+export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus, loadingStatus }: OrdersManagementProps) {
   const [selectedStatus, setSelectedStatus] = useState<string>("all")
 
   const filteredOrders = selectedStatus === "all" 
@@ -42,7 +45,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
   const getOrdersByStatus = (status: string) => 
     orders.filter(order => order.status === status)
 
-  const formatPrice = (price: number) => `${price.toFixed(2)} ر.س`
+  const formatPrice = (price: number) => `${price.toFixed(3)} SP`
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleString('ar-SA', {
@@ -239,6 +242,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
                     {/* أزرار تحديث الحالة */}
                     <div className="flex gap-2 pt-4 border-t">
                       <Select
+                        disabled={loadingStatus}
                         value={order.status}
                         onValueChange={(value) => onUpdateOrderStatus(order._id?.toString() || '', value)}
                       >
@@ -259,6 +263,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'confirmed')}
                           className="bg-blue-600 hover:bg-blue-700"
+                          disabled={loadingStatus}
                         >
                           تأكيد الطلب
                         </Button>
@@ -267,6 +272,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
                       {order.status === 'confirmed' && (
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'preparing')}
+                          disabled={loadingStatus}
                           className="bg-orange-600 hover:bg-orange-700"
                         >
                           بدء التحضير
@@ -276,6 +282,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
                       {order.status === 'preparing' && (
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'ready')}
+                          disabled={loadingStatus}
                           className="bg-green-600 hover:bg-green-700"
                         >
                           جاهز للاستلام
@@ -285,6 +292,7 @@ export function OrdersManagement({ orders, onUpdateOrderStatus }: OrdersManageme
                       {order.status === 'ready' && (
                         <Button 
                           onClick={() => onUpdateOrderStatus(order._id?.toString() || '', 'delivered')}
+                          disabled={loadingStatus}
                           className="bg-gray-600 hover:bg-gray-700"
                         >
                           تم التسليم

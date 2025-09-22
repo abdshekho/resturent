@@ -35,6 +35,7 @@ export interface Restaurant {
     secondaryColor: string
     fontFamily: string
   }
+  template: 'classic' | 'modern' | 'minimal' | 'elegant'
   createdAt?: Date
   updatedAt?: Date
 }

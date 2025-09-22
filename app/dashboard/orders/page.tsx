@@ -53,7 +53,10 @@ export default function OrdersPage() {
     } catch (error) {
       console.error('Error updating order status:', error)
     }
-    setLoadingStatus(false)
+    finally {
+      setLoadingStatus(false)
+    }
+    // setLoadingStatus(false)
   }
 
   if (loading) {

@@ -51,7 +51,7 @@ export default function LoginForm({ userType }: LoginFormProps) {
         // Redirect based on user type
         if (userType === "super-admin") {
           router.push("/super-admin")
-        } else {
+        } else if (userType === "restaurant-admin") {
           router.push("/dashboard")
         }
       } else {
@@ -69,23 +69,23 @@ export default function LoginForm({ userType }: LoginFormProps) {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-emerald-800">
-            {userType === "super-admin" ? "تسجيل دخول المدير العام" : "تسجيل دخول المطعم"}
+            { userType === "super-admin" ? "تسجيل دخول المدير العام" : "تسجيل دخول المطعم" }
           </CardTitle>
           <CardDescription>
-            {userType === "super-admin"
+            { userType === "super-admin"
               ? "ادخل بياناتك للوصول إلى لوحة التحكم الرئيسية"
-              : "ادخل بياناتك للوصول إلى لوحة تحكم المطعم"}
+              : "ادخل بياناتك للوصول إلى لوحة تحكم المطعم" }
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={ handleSubmit } className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={ email }
+                onChange={ (e) => setEmail(e.target.value) }
                 required
                 className="text-right"
                 dir="ltr"
@@ -97,9 +97,9 @@ export default function LoginForm({ userType }: LoginFormProps) {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  type={ showPassword ? "text" : "password" }
+                  value={ password }
+                  onChange={ (e) => setPassword(e.target.value) }
                   required
                   className="pr-10"
                 />
@@ -108,32 +108,32 @@ export default function LoginForm({ userType }: LoginFormProps) {
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={ () => setShowPassword(!showPassword) }
                 >
-                  {showPassword ? (
+                  { showPassword ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
                   ) : (
                     <Eye className="h-4 w-4 text-gray-400" />
-                  )}
+                  ) }
                 </Button>
               </div>
             </div>
 
-            {error && (
+            { error && (
               <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription>{ error }</AlertDescription>
               </Alert>
-            )}
+            ) }
 
-            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={ isLoading }>
+              { isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   جاري تسجيل الدخول...
                 </>
               ) : (
                 "تسجيل الدخول"
-              )}
+              ) }
             </Button>
           </form>
         </CardContent>

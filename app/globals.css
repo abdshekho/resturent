@@ -124,3 +124,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+td {
+  text-align: center;
+}

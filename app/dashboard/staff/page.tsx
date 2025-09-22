@@ -325,12 +325,12 @@ export default function StaffPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-right p-4">{ t("staffName") }</th>
-                        <th className="text-right p-4">{ t("email") }</th>
-                        <th className="text-right p-4">{ t("role") }</th>
-                        <th className="text-right p-4">{ t("status") }</th>
-                        <th className="text-right p-4">{ t("lastLogin") }</th>
-                        <th className="text-right p-4">{ t("actions") }</th>
+                        <th className="text-center p-4">{ t("staffName") }</th>
+                        <th className="text-center p-4">{ t("email") }</th>
+                        <th className="text-center p-4">{ t("role") }</th>
+                        <th className="text-center p-4">{ t("status") }</th>
+                        <th className="text-center p-4">{ t("lastLogin") }</th>
+                        <th className="text-center p-4">{ t("actions") }</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -355,7 +355,7 @@ export default function StaffPage() {
                             }
                           </td>
                           <td className="p-4">
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 justify-center">
                               <Button
                                 size="sm"
                                 variant="outline"

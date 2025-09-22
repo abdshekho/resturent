@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Clock, User, Phone, MapPin, Package, CheckCircle, XCircle } from "lucide-react"
+import { Clock, User, Phone, MapPin, Package, CheckCircle, XCircle, CookingPot, Check, CheckCheck, PackageCheck, Ban } from "lucide-react"
 import type { IOrder } from "@/lib/models/mongoose"
 
 interface OrdersManagementProps {
@@ -120,12 +120,24 @@ export function OrdersManagement({ orders, onUpdateOrderStatus,setLoadingStatus,
       <Tabs value={selectedStatus} onValueChange={setSelectedStatus}>
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="all">الكل</TabsTrigger>
-          <TabsTrigger value="pending">في الانتظار</TabsTrigger>
-          <TabsTrigger value="confirmed">مؤكد</TabsTrigger>
-          <TabsTrigger value="preparing">قيد التحضير</TabsTrigger>
-          <TabsTrigger value="ready">جاهز</TabsTrigger>
-          <TabsTrigger value="delivered">مكتمل</TabsTrigger>
-          <TabsTrigger value="cancelled">ملغي</TabsTrigger>
+          <TabsTrigger value="pending">
+            <Clock className="h-4 w-4" />
+            في الانتظار</TabsTrigger>
+          <TabsTrigger value="confirmed">
+            <Check />
+            مؤكد</TabsTrigger>
+          <TabsTrigger value="preparing">
+            <CookingPot />
+            قيد التحضير</TabsTrigger>
+          <TabsTrigger value="ready">
+            <PackageCheck />
+            جاهز</TabsTrigger>
+          <TabsTrigger value="delivered">
+            <CheckCheck />
+            مكتمل</TabsTrigger>
+          <TabsTrigger value="cancelled">
+            <Ban />
+            ملغي</TabsTrigger>
         </TabsList>
 
         <TabsContent value={selectedStatus} className="mt-6">

@@ -66,7 +66,7 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="restaurant" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="">
           <TabsTrigger value="restaurant" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
             معلومات المطعم

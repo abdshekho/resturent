@@ -72,7 +72,7 @@ export default function OrdersPage() {
 
   return (
       <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
+        <div className="p-2 md:p-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground">إدارة الطلبات</h1>
             <p className="text-muted-foreground">متابعة وإدارة طلبات العملاء</p>

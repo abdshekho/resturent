@@ -1,6 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useLanguage } from "@/components/language-provider"
 import { 
   Settings, 
@@ -25,23 +29,79 @@ import {
   Globe
 } from "lucide-react"
 
+// Zod Schema
+const restaurantSchema = z.object({
+  name: z.string().min(1, "اسم المطعم مطلوب"),
+  description: z.string().min(1, "وصف المطعم مطلوب"),
+  contact: z.object({
+    phone: z.string().min(1, "رقم الهاتف مطلوب"),
+    email: z.string().email("البريد الإلكتروني غير صحيح"),
+    address: z.object({
+      street: z.string().min(1, "الشارع مطلوب"),
+      city: z.string().min(1, "المدينة مطلوبة"),
+      state: z.string().min(1, "المنطقة مطلوبة"),
+      country: z.string().min(1, "الدولة مطلوبة"),
+      zipCode: z.string().min(1, "الرمز البريدي مطلوب")
+    })
+  }),
+  settings: z.object({
+    operatingHours: z.record(z.object({
+      open: z.string().min(1, "وقت الفتح مطلوب"),
+      close: z.string().min(1, "وقت الإغلاق مطلوب"),
+      isOpen: z.boolean()
+    }))
+  })
+})
+
+type RestaurantFormData = z.infer<typeof restaurantSchema>
+
 export default function SettingsPage() {
   const { t } = useLanguage()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingData, setIsLoadingData] = useState(true)
 
-  // بيانات المطعم الافتراضية
-  const [restaurantData, setRestaurantData] = useState({
-    name: "مطعم الأصالة",
-    description: "مطعم يقدم أشهى الأطباق العربية الأصيلة",
-    phone: "+966501234567",
-    email: "info@restaurant.com",
-    address: "الرياض، المملكة العربية السعودية",
-    website: "www.restaurant.com",
-    workingHours: {
-      open: "09:00",
-      close: "23:00"
+  // React Hook Form
+  const form = useForm<RestaurantFormData>({
+    resolver: zodResolver(restaurantSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      contact: {
+        phone: "",
+        email: "",
+        address: {
+          street: "",
+          city: "",
+          state: "",
+          country: "",
+          zipCode: ""
+        }
+      },
+      settings: {
+        operatingHours: {
+          monday: { open: "09:00", close: "23:00", isOpen: true }
+        }
+      }
     }
   })
+
+  // جلب بيانات المطعم من API
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        const response = await fetch('/api/restaurants/settings')
+        if (response.ok) {
+          const data = await response.json()
+          form.reset(data.restaurant)
+        }
+      } catch (error) {
+        console.error('Error fetching restaurant data:', error)
+      } finally {
+        setIsLoadingData(false)
+      }
+    }
+
+    fetchRestaurantData()
+  }, [form])
 
   // إعدادات الإشعارات
   const [notifications, setNotifications] = useState({
@@ -51,11 +111,26 @@ export default function SettingsPage() {
     customerReviews: true
   })
 
-  const handleSave = async () => {
-    setIsLoading(true)
-    // محاكاة حفظ البيانات
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsLoading(false)
+  const onSubmit = async (data: RestaurantFormData) => {
+    try {
+      const response = await fetch('/api/restaurants/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        alert(result.message || 'تم حفظ البيانات بنجاح')
+      } else {
+        alert('حدث خطأ أثناء حفظ البيانات')
+      }
+    } catch (error) {
+      console.error('Error saving data:', error)
+      alert('حدث خطأ أثناء حفظ البيانات')
+    }
   }
 
   return (
@@ -88,7 +163,7 @@ export default function SettingsPage() {
         {/* معلومات المطعم */}
         <TabsContent value="restaurant" className="space-y-4">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-col items-center justify-center">
               <CardTitle className="flex items-center gap-2">
                 <Store className="h-5 w-5" />
                 معلومات المطعم الأساسية
@@ -98,111 +173,172 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">اسم المطعم</Label>
-                  <Input
-                    id="name"
-                    value={restaurantData.name}
-                    onChange={(e) => setRestaurantData({...restaurantData, name: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="flex items-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    رقم الهاتف
-                  </Label>
-                  <Input
-                    id="phone"
-                    value={restaurantData.phone}
-                    onChange={(e) => setRestaurantData({...restaurantData, phone: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">وصف المطعم</Label>
-                <Textarea
-                  id="description"
-                  value={restaurantData.description}
-                  onChange={(e) => setRestaurantData({...restaurantData, description: e.target.value})}
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    البريد الإلكتروني
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={restaurantData.email}
-                    onChange={(e) => setRestaurantData({...restaurantData, email: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="website" className="flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
-                    الموقع الإلكتروني
-                  </Label>
-                  <Input
-                    id="website"
-                    value={restaurantData.website}
-                    onChange={(e) => setRestaurantData({...restaurantData, website: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address" className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  العنوان
-                </Label>
-                <Textarea
-                  id="address"
-                  value={restaurantData.address}
-                  onChange={(e) => setRestaurantData({...restaurantData, address: e.target.value})}
-                  rows={2}
-                />
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <Label className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  ساعات العمل
-                </Label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="open-time">وقت الفتح</Label>
-                    <Input
-                      id="open-time"
-                      type="time"
-                      value={restaurantData.workingHours.open}
-                      onChange={(e) => setRestaurantData({
-                        ...restaurantData,
-                        workingHours: {...restaurantData.workingHours, open: e.target.value}
-                      })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="close-time">وقت الإغلاق</Label>
-                    <Input
-                      id="close-time"
-                      type="time"
-                      value={restaurantData.workingHours.close}
-                      onChange={(e) => setRestaurantData({
-                        ...restaurantData,
-                        workingHours: {...restaurantData.workingHours, close: e.target.value}
-                      })}
-                    />
+              {isLoadingData ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+                    <p>جاري تحميل البيانات...</p>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>اسم المطعم</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="contact.phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Phone className="h-4 w-4" />
+                              رقم الهاتف
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>وصف المطعم</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} rows={3} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="contact.email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Mail className="h-4 w-4" />
+                              البريد الإلكتروني
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} type="email" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="contact.address.city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>المدينة</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="contact.address.street"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4" />
+                              الشارع
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="contact.address.country"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>الدولة</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
+                      <Label className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        ساعات العمل
+                      </Label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="settings.operatingHours.monday.open"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>وقت الفتح</FormLabel>
+                              <FormControl>
+                                <Input {...field} type="time" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="settings.operatingHours.monday.close"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>وقت الإغلاق</FormLabel>
+                              <FormControl>
+                                <Input {...field} type="time" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                      <Button type="button" variant="outline">إلغاء</Button>
+                      <Button type="submit" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? "جاري الحفظ..." : "حفظ التغييرات"}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -382,14 +518,6 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* أزرار الحفظ */}
-      <div className="flex justify-end gap-2">
-        <Button variant="outline">إلغاء</Button>
-        <Button onClick={handleSave} disabled={isLoading}>
-          {isLoading ? "جاري الحفظ..." : "حفظ التغييرات"}
-        </Button>
-      </div>
     </main>
   )
 }

@@ -37,6 +37,7 @@ interface IRestaurant extends Document {
     secondaryColor: string
     fontFamily: string
   }
+  tamplate:string
   createdAt: Date
   updatedAt: Date
 }

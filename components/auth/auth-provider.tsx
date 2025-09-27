@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 interface User {
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Check for stored auth data on mount
     const token = localStorage.getItem("token")
     const userData = localStorage.getItem("user")

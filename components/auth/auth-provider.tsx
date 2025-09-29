@@ -28,23 +28,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  useLayoutEffect(() => {
-    // Check for stored auth data on mount
-    const token = localStorage.getItem("token")
-    const userData = localStorage.getItem("user")
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
 
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData))
-      } catch (error) {
-        // Clear invalid data
-        localStorage.removeItem("token")
-        localStorage.removeItem("user")
-      }
+
+      console.log('🚀 ~ auth-provider.tsx ~ isTokenValid ~ payload.exp:', payload.exp);
+
+
+      console.log('🚀 ~ auth-provider.tsx ~ isTokenValid ~ currentTime:', currentTime);
+
+      return payload.exp > currentTime;
+    } catch {
+      return false;
     }
+  };
 
-    setIsLoading(false)
-  }, [])
+useLayoutEffect(() => {
+  const token = localStorage.getItem("token");
+  const userData = localStorage.getItem("user");
+
+  if (token && userData) {
+    try {
+      // التحقق من صلاحية التوكن
+      if (isTokenValid(token)) {
+        setUser(JSON.parse(userData));
+      } else {
+        // التوكن منتهي - تسجيل خروج تلقائي
+        console.warn("Token expired, auto logout");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+        router.push("/login"); // توجيه لصفحة Login
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+  }
+
+  setIsLoading(false);
+}, [router]);
 
   const login = (token: string, userData: User) => {
     localStorage.setItem("token", token)
@@ -59,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/")
   }
 
-  return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={ { user, login, logout, isLoading } }>{ children }</AuthContext.Provider>
 }
 
 export function useAuth() {
@@ -67,5 +92,8 @@ export function useAuth() {
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider")
   }
+
+  console.log('🚀 ~ auth-provider.tsx ~ useAuth ~ context:', context);
+
   return context
 }

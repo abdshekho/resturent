@@ -15,6 +15,7 @@ export function DashboardSidebar() {
   const pathname = usePathname()
   const { t } = useLanguage()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const { language } = useLanguage()
 
   const navigation = [
     {
@@ -55,82 +56,86 @@ export function DashboardSidebar() {
   ]
 
   return (
-    <div className={cn(
-      "flex h-full flex-col bg-card border-l transition-all duration-300",
-      isCollapsed ? "w-16" : "w-64"
-    )}>
-      {/* Logo */}
+    <div className={ cn(
+      "flex h-full flex-col bg-card  transition-all duration-300 relative",
+      isCollapsed ? "w-16" : "w-64",
+      language === 'ar' ? 'border-l' : 'border-r'
+    ) }>
+      {/* Logo */ }
       <div className="flex h-16 items-center gap-2 px-6 border-b">
         <QrCode className="h-8 w-8 text-primary" />
-        {!isCollapsed && (
+        { !isCollapsed && (
           <div>
             <span className="text-lg font-bold text-foreground">مطعم الأصالة</span>
             <p className="text-xs text-muted-foreground">لوحة التحكم</p>
           </div>
-        )}
+        ) }
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="ml-auto p-1 rounded hover:bg-muted"
+          onClick={ () => setIsCollapsed(!isCollapsed) }
+          className={ cn("ml-auto p-3 rounded-full absolute  top-[50%] bg-card", language === 'ar' ? 'left-[-18px] border-l-2' : 'right-[-18px] border-r-2') }
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          { language === 'ar' ?
+            !isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" /> :
+            isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" /> }
+          { }
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className={cn("flex-1 space-y-1",isCollapsed ? "p-1 md:p-2" : "p-4")}>
-        {navigation.map((item) => {
+      {/* Navigation */ }
+      <nav className={ cn("flex-1 space-y-1", isCollapsed ? "p-1 md:p-2" : "p-4") }>
+        { navigation.map((item) => {
           const isActive = pathname === item.href
           return (
             <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
+              key={ item.name }
+              href={ item.href }
+              className={ cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 isCollapsed && "justify-center"
-              )}
-              title={isCollapsed ? item.name : undefined}
+              ) }
+              title={ isCollapsed ? item.name : undefined }
             >
               <item.icon className="h-5 w-5" />
-              {!isCollapsed && item.name}
+              { !isCollapsed && item.name }
             </Link>
           )
-        })}
+        }) }
       </nav>
 
-      {/* QR Code Link & Theme Toggle */}
+      {/* QR Code Link & Theme Toggle */ }
       <div className="p-4 border-t space-y-2">
         <Link
           href="/dashboard/qr"
-          className={cn(
+          className={ cn(
             "flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground",
             isCollapsed && "justify-center"
-          )}
-          title={isCollapsed ? "عرض رمز QR" : undefined}
+          ) }
+          title={ isCollapsed ? "عرض رمز QR" : undefined }
         >
           <QrCode className="h-4 w-4" />
-          {!isCollapsed && "عرض رمز QR"}
+          { !isCollapsed && "عرض رمز QR" }
         </Link>
-        {!isCollapsed && (
+        { !isCollapsed && (
           <>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{t("theme")}</span>
+              <span className="text-sm text-muted-foreground">{ t("theme") }</span>
               <ThemeToggle />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{t("language")}</span>
+              <span className="text-sm text-muted-foreground">{ t("language") }</span>
               <LanguageToggle />
             </div>
           </>
-        )}
-        {isCollapsed && (
+        ) }
+        { isCollapsed && (
           <div className="flex flex-col items-center gap-2">
             <ThemeToggle />
             <LanguageToggle />
           </div>
-        )}
+        ) }
       </div>
     </div>
   )

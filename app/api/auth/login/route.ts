@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         restaurantId: user.restaurantId,
       },
       JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "30d" },
     )
 
     // Get restaurant data if needed
@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
       userType,
       restaurantId: user.restaurantId,
       restaurantName: restaurant?.name,
+      restaurantSlug: restaurant?.slug,
     }
 
     return NextResponse.json({

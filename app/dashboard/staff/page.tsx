@@ -154,7 +154,7 @@ export default function StaffPage() {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={ handleSubmit } className="space-y-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="name">{ t("staffName") }</Label>
                   <Input
                     id="name"
@@ -163,7 +163,7 @@ export default function StaffPage() {
                     required
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="email">{ t("email") }</Label>
                   <Input
                     id="email"
@@ -173,39 +173,41 @@ export default function StaffPage() {
                     required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="role">{ t("role") }</Label>
-                  <Select
-                    value={ formData.role }
-                    onValueChange={ (value: "restaurant_admin" | "restaurant_staff") =>
-                      setFormData({ ...formData, role: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="restaurant_admin">{ t("admin") }</SelectItem>
-                      <SelectItem value="restaurant_staff">{ t("staff") }</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="status">{ t("status") }</Label>
-                  <Select
-                    value={ formData.isActive ? "active" : "inactive" }
-                    onValueChange={ (value) =>
-                      setFormData({ ...formData, isActive: value === "active" })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">{ t("active") }</SelectItem>
-                      <SelectItem value="inactive">{ t("inactive") }</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex justify-between">
+                  <div className="space-y-2">
+                    <Label htmlFor="role">{ t("role") }</Label>
+                    <Select
+                      value={ formData.role }
+                      onValueChange={ (value: "restaurant_admin" | "restaurant_staff") =>
+                        setFormData({ ...formData, role: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="restaurant_admin">{ t("admin") }</SelectItem>
+                        <SelectItem value="restaurant_staff">{ t("staff") }</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="status">{ t("status") }</Label>
+                    <Select
+                      value={ formData.isActive ? "active" : "inactive" }
+                      onValueChange={ (value) =>
+                        setFormData({ ...formData, isActive: value === "active" })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">{ t("active") }</SelectItem>
+                        <SelectItem value="inactive">{ t("inactive") }</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="flex justify-end space-x-2 space-x-reverse">
                   <Button type="button" variant="outline" onClick={ handleDialogClose }>

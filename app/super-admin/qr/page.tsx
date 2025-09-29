@@ -21,10 +21,8 @@ export default function QRPage() {
         width: 300,
         margin: 2,
         color: {
-          dark: '#FFFFFF',
-          light: '#000000'
-          // dark: '#000000',
-          // light: '#FFFFFF'
+          dark: '#000000',
+          light: '#FFFFFF'
         }
       })
       setQrCodeUrl(qrDataUrl)
@@ -36,7 +34,7 @@ export default function QRPage() {
 
   const downloadQR = () => {
     if (!qrCodeUrl) return
-
+    
     const link = document.createElement('a')
     link.download = 'restaurant-qr-code.png'
     link.href = qrCodeUrl
@@ -54,11 +52,6 @@ export default function QRPage() {
   }
 
   useEffect(() => {
-    const slug = JSON.parse(localStorage.getItem('user')).restaurantSlug;
-    const baseURI = '.resutaruant.com';
-    setMenuUrl(slug+baseURI)
-    // console.log('🚀 ~ page.tsx ~ QRPage ~ local:', slug+baseURI);
-
     generateQRCode()
   }, [menuUrl])
 
@@ -70,7 +63,7 @@ export default function QRPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* إعدادات الرمز */ }
+        {/* إعدادات الرمز */}
         <Card>
           <CardHeader>
             <CardTitle>إعدادات رمز QR</CardTitle>
@@ -83,23 +76,23 @@ export default function QRPage() {
               <Label htmlFor="menu-url">رابط القائمة</Label>
               <Input
                 id="menu-url"
-                value={ menuUrl }
-                onChange={ (e) => setMenuUrl(e.target.value) }
+                value={menuUrl}
+                onChange={(e) => setMenuUrl(e.target.value)}
                 placeholder="https://restaurant.com/menu/your-restaurant"
               />
             </div>
 
             <div className="flex gap-2">
-              <Button
-                onClick={ generateQRCode }
-                disabled={ isGenerating }
+              <Button 
+                onClick={generateQRCode} 
+                disabled={isGenerating}
                 className="flex-1"
               >
-                { isGenerating ? "جاري التوليد..." : "توليد رمز QR" }
+                {isGenerating ? "جاري التوليد..." : "توليد رمز QR"}
               </Button>
-              <Button
-                variant="outline"
-                onClick={ copyToClipboard }
+              <Button 
+                variant="outline" 
+                onClick={copyToClipboard}
                 size="icon"
               >
                 <Copy className="h-4 w-4" />
@@ -108,7 +101,7 @@ export default function QRPage() {
           </CardContent>
         </Card>
 
-        {/* عرض الرمز */ }
+        {/* عرض الرمز */}
         <Card>
           <CardHeader>
             <CardTitle>رمز QR</CardTitle>
@@ -118,11 +111,11 @@ export default function QRPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-center">
-              { qrCodeUrl ? (
-                <div className="p-4 bg-white dark:bg-black rounded-lg border">
-                  <img
-                    src={ qrCodeUrl }
-                    alt="QR Code"
+              {qrCodeUrl ? (
+                <div className="p-4 bg-white rounded-lg border">
+                  <img 
+                    src={qrCodeUrl} 
+                    alt="QR Code" 
                     className="w-64 h-64"
                   />
                 </div>
@@ -130,12 +123,12 @@ export default function QRPage() {
                 <div className="w-64 h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg flex items-center justify-center">
                   <QrCode className="h-16 w-16 text-muted-foreground/50" />
                 </div>
-              ) }
+              )}
             </div>
 
-            { qrCodeUrl && (
+            {qrCodeUrl && (
               <div className="flex gap-2">
-                <Button onClick={ downloadQR } className="flex-1">
+                <Button onClick={downloadQR} className="flex-1">
                   <Download className="h-4 w-4 mr-2" />
                   تحميل
                 </Button>
@@ -144,12 +137,12 @@ export default function QRPage() {
                   مشاركة
                 </Button>
               </div>
-            ) }
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* معلومات إضافية */ }
+      {/* معلومات إضافية */}
       <Card>
         <CardHeader>
           <CardTitle>كيفية الاستخدام</CardTitle>

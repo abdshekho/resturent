@@ -1,5 +1,5 @@
 import { ClassicTemplate } from './ClassicTemplate'
-import { ModernTemplate } from './ModernTemplate'
+import { ModernTemplate } from './modern/ModernTemplate'
 import { MinimalTemplate } from './MinimalTemplate'
 import { ElegantTemplate } from './ElegantTemplate'
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"

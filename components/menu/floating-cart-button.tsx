@@ -16,16 +16,14 @@ export function FloatingCartButton({ itemCount, total, onClick }: FloatingCartBu
   return (
     <Button
       onClick={onClick}
-      size="sm"
-      className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg rounded-full px-4 py-2 flex items-center gap-2"
+      // size="lg"
+      className="px-4 py-2 flex items-center gap-2 bg-transparent border relative text-black dark:text-white group"
     >
-      <div className="relative">
+      <span className="font-semibold text-sm hidden group-hover:block" dir="ltr">{total} SP</span>
         <ShoppingCart className="h-4 w-4" />
-        <Badge className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
+        <Badge className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center text-xs">
           {itemCount}
         </Badge>
-      </div>
-      <span className="font-semibold text-sm">{total.toFixed(2)} SP</span>
     </Button>
   )
 }

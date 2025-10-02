@@ -1,8 +1,8 @@
 "use client"
 
-import { MenuHeader } from "@/components/menu/menu-header"
-import { CategoryTabs } from "@/components/menu/category-tabs"
-import { MenuItemCard } from "@/components/menu/menu-item-card"
+import { ModernMenuHeader } from "@/components/menu/templates/modern/Modern-menu-header"
+import { ModernCategoryTabs } from "@/components/menu/templates/modern/Modern-category-tabs"
+import { ModernMenuItemCard } from "@/components/menu/templates/modern/Modern-menu-item-card"
 import { CartSidebar } from "@/components/menu/cart-sidebar"
 import type { Restaurant, Category, MenuItem } from "@/lib/models/Company"
 
@@ -47,16 +47,16 @@ export function ModernTemplate({
   onPlaceOrder,
 }: ModernTemplateProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <MenuHeader 
+    <div className="min-h-screen bg-gradient-to-br from-slate-300 to-slate-50">
+      <ModernMenuHeader 
         restaurant={restaurant} 
         cartItemCount={cartItemCount} 
         cartTotal={cartTotal} 
         onCartClick={onCartClick} 
       />
       
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b">
-        <CategoryTabs 
+      <div className="sticky top-0 z-40 bg-white/50 backdrop-blur-md border-b">
+        <ModernCategoryTabs 
           categories={categories} 
           activeCategory={activeCategory} 
           onCategoryChange={onCategoryChange} 
@@ -66,8 +66,8 @@ export function ModernTemplate({
       <main className="container mx-auto px-6 py-12">
         <div className="grid gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {filteredMenuItems?.map((menuItem) => (
-            <div key={menuItem._id?.toString()} className="transform hover:scale-105 transition-transform duration-200">
-              <MenuItemCard 
+            <div key={menuItem._id?.toString()} className="">
+              <ModernMenuItemCard 
                 menuItem={menuItem} 
                 onAddToCart={onAddToCart} 
               />

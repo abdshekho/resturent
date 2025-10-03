@@ -30,12 +30,12 @@ export function ModernMenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps)
   return (
     <div className="overflow-hidden hover:shadow-lg bg-card group rounded-xl border">
       <div className="p-0">
-        {/* Image */}
+        {/* Image */ }
         <div className="relative h-48 bg-muted flex items-center justify-center overflow-hidden">
           <img
             // src={menuItem.image || "/placeholder.svg"}
             src="/sha.jpeg"
-            alt={menuItem.name}
+            alt={ menuItem.name }
             className="w-full h-full object-cover group-hover:opacity-75 group-hover:scale-105 transform  transition-transform duration-300"
           />
           {/* {menuItem.image ? (
@@ -48,39 +48,39 @@ export function ModernMenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps)
           ) : (
             <ImageIcon className="h-12 w-12 text-muted-foreground" />
           )} */}
-          {menuItem.isPopular && (
+          { menuItem.isPopular && (
             <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">
               <Star className="h-3 w-3 mr-1 fill-current" />
               مميز
             </Badge>
-          )}
-          {!menuItem.isAvailable && (
+          ) }
+          { !menuItem.isAvailable && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <Badge variant="destructive">غير متوفر</Badge>
             </div>
-          )}
+          ) }
         </div>
 
-        {/* Content */}
+        {/* Content */ }
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-lg text-foreground">{language === 'ar' ? menuItem.nameAr : menuItem.name}</h3>
-            <span className="text-lg font-bold text-primary">{menuItem.price} ريال</span>
+            <h3 className="font-semibold text-lg text-foreground">{ language === 'ar' ? menuItem.nameAr : menuItem.name }</h3>
+            <span className="text-lg font-bold text-primary">{ menuItem.price } ريال</span>
           </div>
 
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{language === 'ar' ? menuItem.descriptionAr : menuItem.description}</p>
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{ language === 'ar' ? menuItem.descriptionAr : menuItem.description }</p>
 
 
-          {/* Add to Cart */}
-          {menuItem.isAvailable && (
+          {/* Add to Cart */ }
+          { menuItem.isAvailable && (
             <div className="flex items-center justify-between">
-              {quantity === 0 ? (
+              { quantity === 0 ? (
                 <Button
-                  onClick={incrementQuantity}
+                  onClick={ incrementQuantity }
                   className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  إضافة إلى السلة
+                  إضافة
                 </Button>
               ) : (
                 <div className="flex items-center justify-between w-full">
@@ -88,28 +88,31 @@ export function ModernMenuItemCard({ menuItem, onAddToCart }: MenuItemCardProps)
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={decrementQuantity}
+                      onClick={ decrementQuantity }
                       className="h-8 w-8 p-0 bg-transparent"
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
-                    <span className="font-semibold text-lg">{quantity}</span>
+                    <span className="font-semibold text-lg">{ quantity }</span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={incrementQuantity}
+                      onClick={ incrementQuantity }
                       className="h-8 w-8 p-0 bg-transparent"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <Button onClick={handleAddToCart} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                    إضافة ({(menuItem.price * quantity).toFixed(2)} ريال)
+                  <Button onClick={ handleAddToCart } className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                    إضافة 
+                    <span className="">
+                    ({ (menuItem.price * quantity) } SP)
+                    </span>
                   </Button>
                 </div>
-              )}
+              ) }
             </div>
-          )}
+          ) }
         </div>
       </div>
     </div>

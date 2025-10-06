@@ -4,10 +4,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users, ChevronLeft, ChevronRight } from "lucide-react"
+import { LayoutDashboard, Menu, Package, ShoppingCart, BarChart3, Settings, QrCode, Users, ChevronLeft, ChevronRight, DoorOpen } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/components/language-provider"
+import { useAuth } from "../auth/auth-provider"
+import { Button } from "../ui/button"
 
 
 
@@ -16,6 +18,7 @@ export function DashboardSidebar() {
   const { t } = useLanguage()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { language } = useLanguage()
+  const { user, logout } = useAuth()
 
   const navigation = [
     {
@@ -52,6 +55,11 @@ export function DashboardSidebar() {
       name: t("settings"),
       href: "/dashboard/settings",
       icon: Settings,
+    },
+    {
+      name: t("qr"),
+      href: "/dashboard/qr",
+      icon: QrCode,
     },
   ]
 
@@ -107,35 +115,42 @@ export function DashboardSidebar() {
 
       {/* QR Code Link & Theme Toggle */ }
       <div className="p-4 border-t space-y-2">
-        <Link
+        {/* <Link
           href="/dashboard/qr"
           className={ cn(
             "flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground",
-            isCollapsed && "justify-center"
           ) }
-          title={ isCollapsed ? "عرض رمز QR" : undefined }
+          title={ "عرض رمز QR" }
         >
           <QrCode className="h-4 w-4" />
           { !isCollapsed && "عرض رمز QR" }
-        </Link>
-        { !isCollapsed && (
-          <>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{ t("theme") }</span>
-              <ThemeToggle />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{ t("language") }</span>
-              <LanguageToggle />
-            </div>
-          </>
-        ) }
-        { isCollapsed && (
-          <div className="flex flex-col items-center gap-2">
+        </Link> */}
+
+
+          <div className="flex items-center justify-between">
+            { !isCollapsed && <span className="text-sm text-muted-foreground">{ t("theme") }</span> }
             <ThemeToggle />
+          </div>
+          <div className="flex items-center justify-between">
+            { !isCollapsed && <span className="text-sm text-muted-foreground">{ t("language") }</span> }
             <LanguageToggle />
           </div>
-        ) }
+
+
+      </div>
+      <div className="p-4 border-t space-y-2">
+        <div className="flex items-center justify-between">
+          { !isCollapsed && <span className="text-sm text-muted-foreground">{ t("logout") }</span> }
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border-1 border-red-300"
+            onClick={ logout }
+            title={ t("logout") }
+          >
+            <DoorOpen className="text-red-300" />
+          </Button>
+        </div>
       </div>
     </div>
   )

@@ -8,6 +8,8 @@ export const translations = {
     analytics: "التقارير",
     staff: "الموظفين",
     settings: "الإعدادات",
+    qr: "رمز QR",
+    logout: "تسجيل الخروج",
     
     // Common
     add: "إضافة",
@@ -61,6 +63,8 @@ export const translations = {
     analytics: "Analytics",
     staff: "Staff",
     settings: "Settings",
+    qr: "QR code",
+    logout: "Log out",
     
     // Common
     add: "Add",

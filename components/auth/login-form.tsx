@@ -50,9 +50,9 @@ export default function LoginForm({ userType }: LoginFormProps) {
 
         // Redirect based on user type
         if (userType === "super-admin") {
-          router.push("/super-admin")
+          window.location.href = "/super-admin"
         } else if (userType === "restaurant-admin") {
-          router.push("/dashboard")
+          window.location.href = "/dashboard"
         }
       } else {
         setError(data.message || "حدث خطأ في تسجيل الدخول")

@@ -216,7 +216,8 @@ export function OrdersManagement({ orders, onUpdateOrderStatus, setLoadingStatus
                       </div>
                       { order.customerInfo.tableNumber && (
                         <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          {/* <MapPin className="h-4 w-4 text-muted-foreground" /> */}
+                          <svg fill="#000000" height="100px" width="100px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 345.403 345.403"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M342.744,120.702l-55.566-37.236c-0.988-0.662-2.151-1.016-3.34-1.016H61.566c-1.189,0-2.352,0.354-3.34,1.016 L2.66,120.702C0.998,121.816,0,123.686,0,125.687v29.687c0,3.313,2.686,6,6,6h35.818v95.58c0,3.313,2.686,6,6,6s6-2.687,6-6 v-30.924l24.241-29.945v10.079c0,3.313,2.687,6,6,6s6-2.687,6-6v-44.416c0-0.126-0.011-0.249-0.019-0.374h16.909v12.523 c0,3.313,2.687,6,6,6h119.506c3.313,0,6-2.687,6-6v-12.523h16.909c-0.008,0.124-0.019,0.247-0.019,0.374v44.416 c0,3.313,2.687,6,6,6s6-2.687,6-6v-10.079l24.241,29.945v30.924c0,3.313,2.686,6,6,6s6-2.687,6-6v-95.58h35.818 c3.314,0,6-2.687,6-6v-29.687C345.403,123.686,344.406,121.816,342.744,120.702z M63.391,94.45h218.621l37.66,25.236H25.731 L63.391,94.45z M78.059,161.747v15.264l-24.241,29.945v-45.583h24.26C78.07,161.498,78.059,161.621,78.059,161.747z M226.455,167.896H118.949v-6.523h107.506V167.896z M291.585,206.956l-24.241-29.945v-15.264c0-0.126-0.011-0.249-0.019-0.374 h24.26V206.956z M12,149.374v-17.687h321.403v17.687H12z"></path> </g> </g></svg>
                           <span>طاولة { order.customerInfo.tableNumber }</span>
                         </div>
                       ) }

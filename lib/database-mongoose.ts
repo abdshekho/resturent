@@ -105,9 +105,21 @@ export class MongooseDatabaseService {
     return await order.save()
   }
 
-  async getOrdersByRestaurant(restaurantId: string, limit = 50): Promise<IOrder[]> {
+  async getOrdersByRestaurant(restaurantId: string, page = 1, limit = 20, dateFilter = {}): Promise<{ orders: IOrder[], total: number, totalPages: number }> {
     await this.connect()
-    return await Order.find({ restaurantId }).sort({ createdAt: -1 }).limit(limit)
+    const query = { restaurantId, ...dateFilter }
+    const skip = (page - 1) * limit
+    
+    const [orders, total] = await Promise.all([
+      Order.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Order.countDocuments(query)
+    ])
+    
+    return {
+      orders,
+      total,
+      totalPages: Math.ceil(total / limit)
+    }
   }
 
   async updateOrderStatus(orderId: string, status: IOrder['status']): Promise<IOrder | null> {
